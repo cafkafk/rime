@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2023 Christina Sørensen
+# SPDX-FileContributor: Christina Sørensen
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rime
+spec:
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: rime

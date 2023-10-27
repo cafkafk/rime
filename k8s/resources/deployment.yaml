@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2023 Christina Sørensen
+# SPDX-FileContributor: Christina Sørensen
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rime
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rime
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: rime
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - rime
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: rime
+          image: registry.digitalocean.com/rime/rime:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          #resources:
+          #  requests:
+          #    cpu: 200m
+          #    memory: 100Mi
+          #  limits:
+          #    cpu: 300m
+          #    memory: 200Mi
+          # securityContext:
+          #   readOnlyRootFilesystem: true
+          #   runAsNonRoot: true
+          #   allowPrivilegeEscalation: false
+          #   capabilities:
+          #     drop:
+          #       - all

@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2023 Christina Sørensen
+# SPDX-FileContributor: Christina Sørensen
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[package]
+name = "rime"
+description = "Nix Flake Input Versioning"
+edition = "2021"
+authors = ["Christina Sørensen <christina@cafkafk.com>"]
+categories = ["command-line-utilities"]
+license = "AGPL-3.0-only"
+version = "0.0.1"
+rust-version = "1.73.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.6.20", features = ["macros"] }
+bytes = "1.5.0"
+clap = { version = "4.4.6", features = ["cargo"] }
+http-body-util = "0.1.0-rc.3"
+hyper = { version = "0.14.27", features = ["client"] }
+log = "0.4.20"
+pretty_env_logger = "0.5.0"
+regex = "1.9.5"
+reqwest = { version = "0.11.22", features = ["json"] }
+serde = { version = "1.0.188", features = ["derive"] }
+serde_json = "1.0.107"
+serde_yaml = "0.9.25"
+tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread"] }
+
+[build-dependencies]
+clap = { version = "4.4.6", features = ["cargo"] }
+clap_complete = "4"
+clap_mangen = "0.2.14"

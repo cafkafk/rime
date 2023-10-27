@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2023 Christina Sørensen
+# SPDX-FileContributor: Christina Sørensen
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rime-balancer
+  annotations:
+    kubernetes.digitalocean.com/load-balancer-id: "your-load-balancer-id"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
+    service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "false"
+spec:
+  type: LoadBalancer
+  selector:
+    app: rime
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
