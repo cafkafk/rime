@@ -3,8 +3,5 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-pub mod routes;
-
-mod endpoints;
-mod utils;
-pub use utils::is_forgejo;
+mod auto_discover;
+pub use self::auto_discover::auto_discover;

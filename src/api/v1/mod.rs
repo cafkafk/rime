@@ -5,6 +5,7 @@
 
 pub mod routes;
 
+mod auto_discovery;
 mod flakehub;
 mod forgejo;
 mod github;
