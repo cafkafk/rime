@@ -33,7 +33,9 @@ async fn get_repo_branch_v1(
             forge,
             user,
             repo,
-            branch.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix")
+            branch
+                .strip_suffix(".tar.gz")
+                .expect("couldn't strip .tar.gz suffix")
         );
         Redirect::to(&uri).into_response()
     } else {
@@ -72,7 +74,10 @@ async fn github_api_get_latest_tag(
 
     trace!("got:\n {:#?}", res[0]["tag_name"]);
 
-    Ok(res[0]["tag_name"].as_str().expect("failed to get release tag-name as_str()").to_string())
+    Ok(res[0]["tag_name"]
+        .as_str()
+        .expect("failed to get release tag-name as_str()")
+        .to_string())
 }
 
 async fn get_repo_v1(
@@ -82,7 +87,10 @@ async fn get_repo_v1(
     if repo.ends_with(".tar.gz") {
         let version = github_api_get_latest_tag(
             user.clone(),
-            repo.clone().strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix").to_string(),
+            repo.clone()
+                .strip_suffix(".tar.gz")
+                .expect("couldn't strip .tar.gz suffix")
+                .to_string(),
         )
         .await
         .expect("failed to await github_api_get_latest_tag");
@@ -90,7 +98,8 @@ async fn get_repo_v1(
             "http://{}.com/{}/{}/archive/refs/tags/{}.tar.gz",
             forge,
             user,
-            repo.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix"),
+            repo.strip_suffix(".tar.gz")
+                .expect("couldn't strip .tar.gz suffix"),
             version,
         );
         trace!("{result_uri:#?}");
@@ -115,7 +124,9 @@ async fn get_repo_version_v1(
             forge,
             user,
             repo,
-            version.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix")
+            version
+                .strip_suffix(".tar.gz")
+                .expect("couldn't strip .tar.gz suffix")
         );
         Redirect::to(&uri).into_response()
     } else {
@@ -144,12 +155,19 @@ async fn main() {
 
     trace!("{config:#?}");
 
-    let socket_addr: String = format!("{}:{}", config.addr.expect("couldn't unwrap config.addr"), config.port.expect("couldn't unwrap config.addr"));
+    let socket_addr: String = format!(
+        "{}:{}",
+        config.addr.expect("couldn't unwrap config.addr"),
+        config.port.expect("couldn't unwrap config.addr")
+    );
 
     debug!("{socket_addr:#?}");
 
     let app = Router::new()
-        .route("/", get(|| async { "Hello, World!" }))
+        .route(
+            "/",
+            get(|| async { Redirect::to("https://github.com/cafkafk/rime") }),
+        )
         .route("/v1/:forge/:user/:repo/b/:branch", get(get_repo_branch_v1))
         .route(
             "/v1/:forge/:user/:repo/branch/:branch",
