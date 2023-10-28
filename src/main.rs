@@ -25,7 +25,7 @@ async fn get_repo_branch_v1(
     Path((forge, user, repo, branch)): Path<(String, String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
-    if branch.ends_with("tar.gz") {
+    if branch.ends_with(".tar.gz") {
         let uri = format!(
             "https://{}.com/{}/{}/archive/refs/heads/{}.tar.gz",
             forge,
@@ -77,7 +77,7 @@ async fn get_repo_v1(
     Path((forge, user, repo)): Path<(String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
-    if repo.ends_with("tar.gz") {
+    if repo.ends_with(".tar.gz") {
         let version = github_api_get_latest_tag(
             user.clone(),
             repo.clone().strip_suffix(".tar.gz").unwrap().to_string(),
@@ -107,7 +107,7 @@ async fn get_repo_version_v1(
     Path((forge, user, repo, version)): Path<(String, String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
-    if version.ends_with("tar.gz") {
+    if version.ends_with(".tar.gz") {
         let uri = format!(
             "https://{}.com/{}/{}/archive/refs/tags/{}.tar.gz",
             forge,
