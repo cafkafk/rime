@@ -69,7 +69,6 @@ async fn github_api_get_latest_tag(
         .send()
         .await?
         .json::<serde_json::Value>()
-        // .text()
         .await?;
 
     trace!("got:\n {:#?}", res[0]["tag_name"]);
