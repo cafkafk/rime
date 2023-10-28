@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+#![deny(clippy::unwrap_used)]
+
 use axum::{
     body::Body,
     extract::Path,
@@ -31,7 +33,7 @@ async fn get_repo_branch_v1(
             forge,
             user,
             repo,
-            branch.strip_suffix(".tar.gz").unwrap()
+            branch.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix")
         );
         Redirect::to(&uri).into_response()
     } else {
@@ -70,7 +72,7 @@ async fn github_api_get_latest_tag(
 
     trace!("got:\n {:#?}", res[0]["tag_name"]);
 
-    Ok(res[0]["tag_name"].as_str().unwrap().to_string())
+    Ok(res[0]["tag_name"].as_str().expect("failed to get release tag-name as_str()").to_string())
 }
 
 async fn get_repo_v1(
@@ -80,15 +82,15 @@ async fn get_repo_v1(
     if repo.ends_with(".tar.gz") {
         let version = github_api_get_latest_tag(
             user.clone(),
-            repo.clone().strip_suffix(".tar.gz").unwrap().to_string(),
+            repo.clone().strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix").to_string(),
         )
         .await
-        .unwrap();
+        .expect("failed to await github_api_get_latest_tag");
         let result_uri = format!(
             "http://{}.com/{}/{}/archive/refs/tags/{}.tar.gz",
             forge,
             user,
-            repo.strip_suffix(".tar.gz").unwrap(),
+            repo.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix"),
             version,
         );
         trace!("{result_uri:#?}");
@@ -113,7 +115,7 @@ async fn get_repo_version_v1(
             forge,
             user,
             repo,
-            version.strip_suffix(".tar.gz").unwrap()
+            version.strip_suffix(".tar.gz").expect("couldn't strip .tar.gz suffix")
         );
         Redirect::to(&uri).into_response()
     } else {
@@ -142,7 +144,7 @@ async fn main() {
 
     trace!("{config:#?}");
 
-    let socket_addr: String = format!("{}:{}", config.addr.unwrap(), config.port.unwrap());
+    let socket_addr: String = format!("{}:{}", config.addr.expect("couldn't unwrap config.addr"), config.port.expect("couldn't unwrap config.addr"));
 
     debug!("{socket_addr:#?}");
 
@@ -171,8 +173,8 @@ async fn main() {
         )
         .route("/v1/:forge/:user/:repo", get(get_repo_v1));
 
-    axum::Server::bind(&socket_addr.parse().unwrap())
+    axum::Server::bind(&socket_addr.parse().expect("failed to parse socket_addr"))
         .serve(app.into_make_service())
         .await
-        .unwrap();
+        .expect("failed to await on bind().serve()");
 }

@@ -50,7 +50,7 @@ impl Config {
         }
     }
     pub fn _gen_example_config(&self) -> Result<(), Error> {
-        let data = serde_yaml::to_string(&self).unwrap();
+        let data = serde_yaml::to_string(&self).expect("failed to deserialize self to yaml");
         write(CONFIG, data)
     }
 }
