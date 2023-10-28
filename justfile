@@ -121,17 +121,17 @@ alias c := cross
 
     ## Linux
     ### x86
-    just binary {{name}} x86_64-unknown-linux-gnu
+    -just binary {{name}} x86_64-unknown-linux-gnu
     # just binary_static {{name}} x86_64-unknown-linux-gnu
-    just binary {{name}} x86_64-unknown-linux-musl
-    just binary_static {{name}} x86_64-unknown-linux-musl
+    -just binary {{name}} x86_64-unknown-linux-musl
+    -just binary_static {{name}} x86_64-unknown-linux-musl
 
     ### aarch
-    just binary {{name}} aarch64-unknown-linux-gnu
+    -just binary {{name}} aarch64-unknown-linux-gnu
     # BUG: just binary_static {{name}} aarch64-unknown-linux-gnu
 
     ### arm
-    just binary {{name}} arm-unknown-linux-gnueabihf
+    -just binary {{name}} arm-unknown-linux-gnueabihf
     # just binary_static {{name}} arm-unknown-linux-gnueabihf
 
     ## MacOS
@@ -139,7 +139,7 @@ alias c := cross
 
     ## Windows
     ### x86
-    just binary {{name}}.exe x86_64-pc-windows-gnu
+    -just binary {{name}}.exe x86_64-pc-windows-gnu
     # just binary_static {{name}}.exe x86_64-pc-windows-gnu
     # TODO: just binary {{name}}.exe x86_64-pc-windows-gnullvm
     # TODO: just binary {{name}}.exe x86_64-pc-windows-msvc
