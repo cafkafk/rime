@@ -5,3 +5,5 @@
 
 mod gitlab_api_get_latest_tag;
 pub use self::gitlab_api_get_latest_tag::gitlab_api_get_latest_tag;
+mod is_gitlab;
+pub use self::is_gitlab::is_gitlab;

@@ -6,5 +6,3 @@
 pub mod routes;
 
 mod endpoints;
-mod utils;
-pub use utils::is_forgejo;

@@ -5,3 +5,5 @@
 
 mod forgejo_api_get_latest_tag_url;
 pub use self::forgejo_api_get_latest_tag_url::forgejo_api_get_latest_tag_url;
+mod is_forgejo;
+pub use self::is_forgejo::is_forgejo;
