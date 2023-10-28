@@ -5,5 +5,4 @@
 
 pub mod routes;
 
-mod flakehub;
-mod github;
+mod endpoints;
