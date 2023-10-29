@@ -8,3 +8,4 @@ pub mod routes;
 mod flakehub;
 mod forgejo;
 mod github;
+mod gitlab;
