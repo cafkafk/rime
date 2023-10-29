@@ -14,13 +14,12 @@ use axum::{
 use log::{debug, error, info, trace, warn};
 
 pub async fn get_repo_branch(
-    Path((forge, user, repo, branch)): Path<(String, String, String, String)>,
+    Path((user, repo, branch)): Path<(String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if branch.ends_with(".tar.gz") {
         let uri = format!(
-            "https://{}.com/{}/{}/archive/refs/heads/{}.tar.gz",
-            forge,
+            "https://github.com/{}/{}/archive/refs/heads/{}.tar.gz",
             user,
             repo,
             branch

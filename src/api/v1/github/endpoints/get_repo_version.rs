@@ -14,13 +14,12 @@ use axum::{
 use log::{debug, error, info, trace, warn};
 
 pub async fn get_repo_version(
-    Path((forge, user, repo, version)): Path<(String, String, String, String)>,
+    Path((user, repo, version)): Path<(String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if version.ends_with(".tar.gz") {
         let uri = format!(
-            "https://{}.com/{}/{}/archive/refs/tags/{}.tar.gz",
-            forge,
+            "https://github.com/{}/{}/archive/refs/tags/{}.tar.gz",
             user,
             repo,
             version

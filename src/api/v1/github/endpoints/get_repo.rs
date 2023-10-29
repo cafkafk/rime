@@ -16,7 +16,7 @@ use log::{debug, error, info, trace, warn};
 use super::super::utils::github_api_get_latest_tag;
 
 pub async fn get_repo(
-    Path((forge, user, repo)): Path<(String, String, String)>,
+    Path((user, repo)): Path<(String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if repo.ends_with(".tar.gz") {
@@ -30,8 +30,7 @@ pub async fn get_repo(
         .await
         .expect("failed to await github_api_get_latest_tag");
         let result_uri = format!(
-            "http://{}.com/{}/{}/archive/refs/tags/{}.tar.gz",
-            forge,
+            "http://github.com/{}/{}/archive/refs/tags/{}.tar.gz",
             user,
             repo.strip_suffix(".tar.gz")
                 .expect("couldn't strip .tar.gz suffix"),

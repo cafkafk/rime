@@ -9,9 +9,6 @@ use axum::{routing::get, Router};
 
 pub fn get_routes() -> Router {
     Router::new()
-        .route("/v1/flakehub/:user/:repo/v/:version", get(get_repo_version))
-        .route(
-            "/v1/flakehub/:user/:repo/version/:version",
-            get(get_repo_version),
-        )
+        .route("/:user/:repo/v/:version", get(get_repo_version))
+        .route("/:user/:repo/version/:version", get(get_repo_version))
 }
