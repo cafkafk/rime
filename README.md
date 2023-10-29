@@ -29,7 +29,7 @@ Rime is an open-source middleware, designed to bridge the gap between Nix Flakes
 
 Unlike some alternatives like flakehub, Rime stands out by not mandating any push actions from the repository. Moreover, Rime currently operates without retaining any state, focusing primarily on logic that facilitates redirection through its API. Please note that the API is in a developmental phase and might be unstable.
 
-As Rime is in in an early phase of development, it only supports github, but aims to support major forges as well as other places you might put a flake, whatever they may be. Rime is not a fan of github defaultism.
+As Rime is in an early phase of development, it only supports github, but aims to support major forges as well as other places you might put a flake, whatever they may be. Rime is not a fan of github defaultism.
 
 (Notice that Rime doesn't aim to be a flakehub replacement, flakehub and Rime have different approaches with different tradeoffs)
 
