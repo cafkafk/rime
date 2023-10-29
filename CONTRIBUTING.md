@@ -13,7 +13,7 @@ sure to familiarize yourself with first.
 - Code of conduct [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md)
 - Usage of the [REUSE standard](https://reuse.software/)
 - Requirement of conformance to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- Requirement of conformance to Semantic Versioning](https://semver.org/)
+- Requirement of conformance to [Semantic Versioning](https://semver.org/)
 - The [Security Policy](SECURITY.md)
 - [Free and Open Source (FOSS) software](https://www.gnu.org/philosophy/free-sw.en.html)
 
