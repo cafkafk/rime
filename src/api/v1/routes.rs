@@ -14,5 +14,6 @@ pub fn get_routes() -> Router {
         .nest("/github", get_github_routes())
         .nest("/flakehub", get_flakehub_routes())
         .nest("/forgejo", get_forgejo_routes())
+        .nest("/gitea", get_forgejo_routes())
         .merge(get_forgejo_redirect_routes())
 }
