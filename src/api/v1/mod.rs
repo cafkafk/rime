@@ -11,3 +11,5 @@ mod forgejo;
 mod github;
 mod gitlab;
 mod sourcehut;
+mod utils;
+pub use utils::ForgeReleases;

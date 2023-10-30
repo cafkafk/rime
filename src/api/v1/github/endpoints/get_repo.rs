@@ -13,31 +13,35 @@ use axum::{
 #[allow(unused)]
 use log::{debug, error, info, trace, warn};
 
-use super::super::utils::github_api_get_latest_tag;
+use super::super::utils::github_api_get_releases;
 
 pub async fn get_repo(
     Path((user, repo)): Path<(String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if repo.ends_with(".tar.gz") {
-        let version = github_api_get_latest_tag(
-            user.clone(),
-            repo.clone()
-                .strip_suffix(".tar.gz")
-                .expect("couldn't strip .tar.gz suffix")
-                .to_string(),
-        )
-        .await
-        .expect("failed to await github_api_get_latest_tag");
-        let result_uri = format!(
-            "http://github.com/{}/{}/archive/refs/tags/{}.tar.gz",
-            user,
-            repo.strip_suffix(".tar.gz")
-                .expect("couldn't strip .tar.gz suffix"),
-            version,
-        );
-        trace!("{result_uri:#?}");
-        Redirect::to(&result_uri).into_response()
+        let repo_name = repo
+            .clone()
+            .strip_suffix(".tar.gz")
+            .expect("couldn't strip .tar.gz suffix")
+            .to_string();
+        let releases = github_api_get_releases(user.clone(), repo_name.clone())
+            .await
+            .expect("failed to await github_api_get_releases");
+        if let Some(latest_release) = releases.latest_release(true) {
+            let latest_tag = latest_release.tag_name;
+            trace!("latest_tag: {latest_tag:#?}");
+
+            let redirect_url =
+                format!("/v1/github/{}/{}/v/{}.tar.gz", user, repo_name, latest_tag,);
+            Redirect::to(&redirect_url).into_response()
+        } else {
+            let body = format!(
+                "Hi friend, no releases found for github.com/{}/{} :(",
+                user, repo_name,
+            );
+            (StatusCode::NOT_FOUND, body).into_response()
+        }
     } else {
         let body = format!(
             "Hi friend, you probably meant to request {:#?}{}.tar.gz, that should work <3",
