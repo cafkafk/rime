@@ -17,26 +17,48 @@ buildContainer:
     docker load -i ./result
 
 # GitHub Container Registry
-ghPushContainer:
-    docker tag rime:latest ghcr.io/cafkafk/rime:latest
+ghPushContainer VERSION:
+    docker tag rime:latest ghcr.io/cafkafk/rime:{{VERSION}}
     -pass show rime/gh/deployment/persona-access-token | tail -n 1 | docker login ghcr.io -u cafkafk --password-stdin
-    docker push ghcr.io/cafkafk/rime:latest
+    docker push ghcr.io/cafkafk/rime:{{VERSION}}
 
 # Digital Ocean Container Registry
-doPushContainer:
-    docker tag rime:latest registry.digitalocean.com/rime/rime:latest
+doPushContainer VERSION:
+    docker tag rime:latest registry.digitalocean.com/rime/rime:{{VERSION}}
     -pass show rime/digitalocean/deployment/personal-access-token | tail -n 1 | docker login registry.digitalocean.com -u "$(pass show rime/digitalocean/deployment/personal-access-token | tail -n 1)" --password-stdin
-    docker push registry.digitalocean.com/rime/rime:latest
+    docker push registry.digitalocean.com/rime/rime:{{VERSION}}
 
+pushLatestContainers:
+    just ghPushContainer latest
+    just doPushContainer latest
 
-pushContainers:
-    just ghPushContainer
-    just doPushContainer
+pushTaggedContainers VERSION:
+    just ghPushContainer {{VERSION}}
+    just doPushContainer {{VERSION}}
 
-buildAndPushContainers:
+buildAndPushLatestContainers:
     just buildContainer
-    just pushContainers
+    just pushLatestContainers
 
+buildAndPushTaggedContainers VERSION:
+    git checkout {{VERSION}}
+    just buildContainer
+    just pushTaggedContainers {{VERSION}}
+
+# Builds and pushes most recently tagged version
+buildAndPushRecentContainers:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    current_commit="$(git rev-parse HEAD)";
+    version="v$(convco version)";
+
+    git checkout $version;
+
+    just buildContainer;
+    just pushTaggedContainers $version;
+
+    git checkout $current_commit;
 
 #---------------#
 #    release    #
