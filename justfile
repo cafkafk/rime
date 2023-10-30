@@ -166,12 +166,18 @@ run_test TARGET:
 
 # Integration Testing (requires Nix)
 itest:
-    set -euxo pipefail
+    # TODO: self hosted gitlab
+
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
-    just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
-    # TODO: self hosted gitlab
+
+    just run_test "http://localhost:3000/v1/codeberg.org/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/github.com/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/gitlab.com/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/next.forgejo.org/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
+
     @echo "tests passsed :3"
