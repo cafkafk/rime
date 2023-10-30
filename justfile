@@ -203,3 +203,21 @@ itest:
     just run_test "http://localhost:3000/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
     @echo "tests passsed :3"
+
+# Integration Testing of rime.cx (requires Nix)
+itest-live:
+    # TODO: self hosted gitlab
+
+    just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
+
+    just run_test "http://rime.cx/v1/codeberg.org/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/github.com/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/gitlab.com/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/next.forgejo.org/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
+
+    @echo "tests passsed :3"
