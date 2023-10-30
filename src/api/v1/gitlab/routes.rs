@@ -9,8 +9,8 @@ use axum::{routing::get, Router};
 
 pub fn get_routes() -> Router {
     Router::new()
-        .route("/:host/:user/:repo/b/:branch", get(get_repo_ref))
-        .route("/:host/:user/:repo/branch/:branch", get(get_repo_ref))
+        .route("/:host/:user/:repo/b/*branch", get(get_repo_ref))
+        .route("/:host/:user/:repo/branch/*branch", get(get_repo_ref))
         .route("/:host/:user/:repo/v/:version", get(get_repo_ref))
         .route("/:host/:user/:repo/version/:version", get(get_repo_ref))
         .route("/:host/:user/:repo/t/:version", get(get_repo_ref))
