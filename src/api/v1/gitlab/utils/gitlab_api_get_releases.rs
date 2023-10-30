@@ -6,17 +6,21 @@
 #[allow(unused)]
 use log::{debug, error, info, trace, warn};
 
-pub async fn forgejo_api_get_latest_tag_url(
+use super::super::super::utils::ForgeReleases;
+
+pub async fn gitlab_api_get_releases(
     host: String,
     user: String,
     repo: String,
-) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+) -> Result<ForgeReleases, Box<dyn std::error::Error + Send + Sync>> {
     use reqwest::{
         header::{ACCEPT, USER_AGENT},
         Url,
     };
+    // TODO: The middle part, `{}%2F{}` is really `user/repo` URL-encoded. We
+    // should do proper URL encoding.
     let version_uri = Url::parse(&format!(
-        "http://{}/api/v1/repos/{}/{}/releases?limit=1",
+        "https://{}/api/v4/projects/{}%2F{}/releases?per_page=42",
         host, user, repo
     ))?;
     trace!("version_uri: {version_uri:#?}");
@@ -29,10 +33,16 @@ pub async fn forgejo_api_get_latest_tag_url(
         .json::<serde_json::Value>()
         .await?;
 
-    trace!("got:\n {:#?}", res[0]["tarball_url"]);
+    let releases = if res.is_array() {
+        ForgeReleases::from(
+            res.as_array()
+                .expect("Failed to unwrap releases API response as_array()")
+                .iter(),
+        )
+    } else {
+        ForgeReleases::new()
+    };
+    trace!("releases: {releases:#?}");
 
-    Ok(res[0]["tarball_url"]
-        .as_str()
-        .expect("failed to get release tarball_url as_str()")
-        .to_string())
+    Ok(releases)
 }

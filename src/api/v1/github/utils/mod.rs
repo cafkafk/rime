@@ -3,5 +3,5 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-mod github_api_get_latest_tag;
-pub use self::github_api_get_latest_tag::github_api_get_latest_tag;
+mod github_api_get_releases;
+pub use self::github_api_get_releases::github_api_get_releases;
