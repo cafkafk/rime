@@ -6,14 +6,14 @@
   description = "rime:  Nix Flake Input Versioning";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    naersk.url = "github:nix-community/naersk";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    flake-utils.url = "http://rime.cx/v1/github/numtide/flake-utils/b/main.tar.gz";
+    naersk.url = "http://rime.cx/v1/github/nix-community/naersk/b/master.tar.gz";
+    nixpkgs.url = "http:/rime.cx/v1/github/NixOS/nixpkgs/b/nixpkgs-unstable.tar.gz";
+    treefmt-nix.url = "http://rime.cx/v1/github/numtide/treefmt-nix/b/main.tar.gz";
+    rust-overlay.url = "http://rime.cx/v1/github/oxalica/rust-overlay/b/master.tar.gz";
 
     pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+      url = "http://rime.cx/v1/github/cachix/pre-commit-hooks.nix/b/master.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
