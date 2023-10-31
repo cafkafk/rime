@@ -200,6 +200,9 @@ itest:
     just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
     just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/v/v0.0.1.tar.gz"
 
+    # Branch Endpoints
+    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/b/main.tar.gz"
+
     # Tags Endpoints
     just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/v0.0.1.tar.gz"
     just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/main.tar.gz"
