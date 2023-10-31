@@ -9,6 +9,7 @@ use log::{debug, error, info, trace, warn};
 use super::super::super::utils::ForgeReleases;
 
 pub async fn github_api_get_releases(
+    page_size: u8,
     user: String,
     repo: String,
 ) -> Result<ForgeReleases, Box<dyn std::error::Error + Send + Sync>> {
@@ -17,8 +18,8 @@ pub async fn github_api_get_releases(
         Url,
     };
     let version_uri = Url::parse(&format!(
-        "http://api.github.com/repos/{}/{}/releases?per_page=42",
-        user, repo
+        "http://api.github.com/repos/{}/{}/releases?per_page={}",
+        user, repo, page_size
     ))?;
     trace!("{:#?}", version_uri);
     let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;

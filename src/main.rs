@@ -5,7 +5,7 @@
 
 #![deny(clippy::unwrap_used)]
 
-use axum::{response::Redirect, routing::get, Router};
+use axum::{extract::Extension, response::Redirect, routing::get, Router};
 
 extern crate log;
 extern crate pretty_env_logger;
@@ -40,7 +40,8 @@ async fn main() {
             "/",
             get(|| async { Redirect::to("https://github.com/cafkafk/rime") }),
         )
-        .merge(get_api_routes());
+        .merge(get_api_routes())
+        .layer(Extension(config.clone()));
 
     axum::Server::bind(&config.bind_addr())
         .serve(app.into_make_service())

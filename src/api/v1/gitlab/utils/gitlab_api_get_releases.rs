@@ -9,6 +9,7 @@ use log::{debug, error, info, trace, warn};
 use super::super::super::utils::ForgeReleases;
 
 pub async fn gitlab_api_get_releases(
+    page_size: u8,
     host: String,
     user: String,
     repo: String,
@@ -20,8 +21,8 @@ pub async fn gitlab_api_get_releases(
     // TODO: The middle part, `{}%2F{}` is really `user/repo` URL-encoded. We
     // should do proper URL encoding.
     let version_uri = Url::parse(&format!(
-        "https://{}/api/v4/projects/{}%2F{}/releases?per_page=42",
-        host, user, repo
+        "https://{}/api/v4/projects/{}%2F{}/releases?per_page={}",
+        host, user, repo, page_size
     ))?;
     trace!("version_uri: {version_uri:#?}");
     let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;

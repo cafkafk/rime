@@ -15,8 +15,9 @@ pub const CONFIG: &str = "config.yaml";
 
 const ADDR: &str = "0.0.0.0";
 const PORT: &str = "3000";
+const DEFAULT_FORGE_API_PAGE_SIZE: u8 = 10;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
     /// The address of the server
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,6 +25,14 @@ pub struct Config {
     /// The port of the server
     #[serde(skip_serializing_if = "Option::is_none")]
     port: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    forges: Option<ConfigForges>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct ConfigForges {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    api_page_size: Option<u8>,
 }
 
 impl Config {
@@ -46,6 +55,9 @@ impl Config {
             Err(_) => Config {
                 addr: Some(ADDR.to_string()),
                 port: Some(PORT.to_string()),
+                forges: Some(ConfigForges {
+                    api_page_size: Some(DEFAULT_FORGE_API_PAGE_SIZE),
+                }),
             },
         }
     }
@@ -66,5 +78,12 @@ impl Config {
     pub fn _gen_example_config(&self) -> Result<(), Error> {
         let data = serde_yaml::to_string(&self).expect("failed to deserialize self to yaml");
         write(CONFIG, data)
+    }
+
+    pub fn get_forge_api_page_size(&self) -> u8 {
+        match &self.forges {
+            Some(cfg) => cfg.api_page_size.unwrap_or(DEFAULT_FORGE_API_PAGE_SIZE),
+            _ => DEFAULT_FORGE_API_PAGE_SIZE,
+        }
     }
 }
