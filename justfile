@@ -190,14 +190,21 @@ run_test TARGET:
 itest:
     # TODO: self hosted gitlab
 
+    # Default Endpoints
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
-    just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
 
+    # Version Endpoints
+    just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
     just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/v/v0.0.1.tar.gz"
 
+    # Tags Endpoints
+    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/v0.0.1.tar.gz"
+    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/main.tar.gz"
+
+    # Autodiscovery
     just run_test "http://localhost:3000/v1/codeberg.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab.com/cafkafk/hello.tar.gz"

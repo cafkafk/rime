@@ -13,13 +13,12 @@ use axum::{
 #[allow(unused)]
 use log::{debug, error, info, trace, warn};
 
-pub async fn get_repo_version(
-    Path((host, user, repo, version)): Path<(String, String, String, String)>,
+pub async fn get_repo_ref(
+    Path((host, user, repo, git_ref)): Path<(String, String, String, String)>,
     request: Request<Body>,
 ) -> impl IntoResponse {
-    if version.ends_with(".tar.gz") {
-        let uri = format!("https://{}/~{}/{}/archive/{}", host, user, repo, version);
-        debug!("sourcehut: get_repo_version uri {uri:#?}");
+    if git_ref.ends_with(".tar.gz") {
+        let uri = format!("https://{}/~{}/{}/archive/{}", host, user, repo, git_ref);
         Redirect::to(&uri).into_response()
     } else {
         let body = format!(
