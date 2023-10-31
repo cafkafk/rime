@@ -3,11 +3,5 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-pub mod routes;
-
-mod auto_discovery;
-mod flakehub;
-mod forgejo;
-mod github;
-mod gitlab;
-mod sourcehut;
+mod get_repo_version;
+pub use self::get_repo_version::get_repo_version;
