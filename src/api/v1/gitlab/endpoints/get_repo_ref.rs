@@ -21,9 +21,10 @@ pub async fn get_repo_ref(
         let git_ref_name = git_ref
             .strip_suffix(".tar.gz")
             .expect("couldn't strip .tar.gz suffix");
+        let git_ref_dashed_name = git_ref_name.replace('/', "-");
         let uri = format!(
             "https://{}/{}/{}/-/archive/{}/{}-{}.tar.gz",
-            host, user, repo, git_ref_name, repo, git_ref_name,
+            host, user, repo, git_ref_name, repo, git_ref_dashed_name,
         );
         Redirect::to(&uri).into_response()
     } else {
