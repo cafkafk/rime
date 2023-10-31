@@ -9,6 +9,7 @@ use log::{debug, error, info, trace, warn};
 use super::super::super::utils::ForgeReleases;
 
 pub async fn forgejo_api_get_releases(
+    page_size: u8,
     host: String,
     user: String,
     repo: String,
@@ -18,8 +19,8 @@ pub async fn forgejo_api_get_releases(
         Url,
     };
     let version_uri = Url::parse(&format!(
-        "http://{}/api/v1/repos/{}/{}/releases?limit=42",
-        host, user, repo
+        "http://{}/api/v1/repos/{}/{}/releases?limit={}",
+        host, user, repo, page_size
     ))?;
     trace!("version_uri: {version_uri:#?}");
     let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;

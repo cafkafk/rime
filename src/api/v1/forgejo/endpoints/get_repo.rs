@@ -5,7 +5,7 @@
 
 use axum::{
     body::Body,
-    extract::Path,
+    extract::{Extension, Path},
     http::{Request, StatusCode},
     response::{IntoResponse, Redirect},
 };
@@ -14,9 +14,11 @@ use axum::{
 use log::{debug, error, info, trace, warn};
 
 use super::super::utils::forgejo_api_get_releases;
+use crate::data::Config;
 
 pub async fn get_repo(
     Path((host, user, repo)): Path<(String, String, String)>,
+    Extension(config): Extension<Config>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if repo.ends_with(".tar.gz") {
@@ -25,9 +27,14 @@ pub async fn get_repo(
             .strip_suffix(".tar.gz")
             .expect("couldn't strip .tar.gz suffix")
             .to_string();
-        let releases = forgejo_api_get_releases(host.clone(), user.clone(), repo_name.clone())
-            .await
-            .expect("failed to await forgejo_api_get_releases");
+        let releases = forgejo_api_get_releases(
+            config.get_forge_api_page_size(),
+            host.clone(),
+            user.clone(),
+            repo_name.clone(),
+        )
+        .await
+        .expect("failed to await forgejo_api_get_releases");
         if let Some(latest_release) = releases.latest_release(true) {
             let latest_tag = latest_release.tag_name;
             trace!("latest_tag: {latest_tag:#?}");
