@@ -16,7 +16,7 @@ pub async fn forgejo_api_get_latest_tag_url(
         Url,
     };
     let version_uri = Url::parse(&format!(
-        "http://{}/api/v1/repos/{}/{}/tags?limit=1",
+        "http://{}/api/v1/repos/{}/{}/releases?limit=1",
         host, user, repo
     ))?;
     trace!("version_uri: {version_uri:#?}");
