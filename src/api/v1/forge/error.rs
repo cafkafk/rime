@@ -18,6 +18,7 @@ pub enum ForgeError {
     NoFlagshipInstance,
     AutodetectFailed(String),
     SemverError(semver::Error),
+    BadRequest(String),
 }
 
 impl IntoResponse for ForgeError {
@@ -54,6 +55,10 @@ impl IntoResponse for ForgeError {
             ForgeError::SemverError(error) => {
                 error!("ForgeError::SemverError: {error}");
                 (StatusCode::BAD_REQUEST, error.to_string())
+            }
+            ForgeError::BadRequest(error) => {
+                error!("ForgeError::BadRequest: {error}");
+                (StatusCode::BAD_REQUEST, error)
             }
         };
         (status, error_message).into_response()
