@@ -20,10 +20,10 @@ const PORT: &str = "3000";
 pub struct Config {
     /// The address of the server
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub addr: Option<String>,
+    addr: Option<String>,
     /// The port of the server
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub port: Option<String>,
+    port: Option<String>,
 }
 
 impl Config {
@@ -49,6 +49,20 @@ impl Config {
             },
         }
     }
+    pub fn bind_addr(&self) -> std::net::SocketAddr {
+        let socket_addr: String = format!(
+            "{}:{}",
+            self.addr.clone().unwrap_or(ADDR.to_string()),
+            self.port.clone().unwrap_or(PORT.to_string())
+        );
+
+        debug!("socket_addr: {socket_addr:#?}");
+
+        socket_addr
+            .parse()
+            .expect("failed to parse the bind address")
+    }
+
     pub fn _gen_example_config(&self) -> Result<(), Error> {
         let data = serde_yaml::to_string(&self).expect("failed to deserialize self to yaml");
         write(CONFIG, data)
