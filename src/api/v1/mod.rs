@@ -6,10 +6,10 @@
 pub mod routes;
 
 mod auto_discovery;
-mod flakehub;
-mod forgejo;
-mod github;
-mod gitlab;
-mod sourcehut;
-mod utils;
-pub use utils::ForgeReleases;
+
+mod forge;
+pub use forge::{Forge, ForgeError};
+mod forges;
+pub use forges::{FlakeHub, Forgejo, GitHub, Gitlab, SourceHut};
+
+pub mod utils;
