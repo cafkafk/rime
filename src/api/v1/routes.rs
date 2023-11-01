@@ -18,11 +18,12 @@ pub fn get_routes() -> Router {
         .merge(get_auto_discovery_routes())
         .nest("/forgejo", forgejo.get_routes())
         .nest("/gitea", forgejo.get_routes())
+        .nest("/codeberg", forgejo.get_flagship_routes())
+        .nest("/codeberg.org", forgejo.get_flagship_routes())
         .nest("/gitlab", Gitlab::new().get_routes())
         .nest("/sourcehut", SourceHut::new().get_routes())
         .nest("/github", github.get_flagship_routes())
         .nest("/github.com", github.get_flagship_routes())
         .nest("/flakehub", flakehub.get_flagship_routes())
         .nest("/flakehub.com", flakehub.get_flagship_routes())
-        .merge(forgejo.get_redirect_routes())
 }
