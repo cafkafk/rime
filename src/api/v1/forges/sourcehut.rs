@@ -30,11 +30,11 @@ impl Forge for SourceHut {
         Self
     }
 
-    fn get_flagship_host(&self) -> Result<String, ForgeError> {
+    async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("git.sr.ht".to_string())
     }
 
-    fn get_api_releases_url(
+    async fn get_api_releases_url(
         &self,
         _host: &str,
         _user: &str,
@@ -44,7 +44,7 @@ impl Forge for SourceHut {
         Err(ForgeError::EndpointUnavailable)
     }
 
-    fn get_tarball_url_for_branch(
+    async fn get_tarball_url_for_branch(
         &self,
         host: &str,
         user: &str,
@@ -54,7 +54,7 @@ impl Forge for SourceHut {
         self.get_tarball_url_for_ref(host, user, repo, branch)
     }
 
-    fn get_tarball_url_for_version(
+    async fn get_tarball_url_for_version(
         &self,
         host: &str,
         user: &str,
@@ -64,7 +64,7 @@ impl Forge for SourceHut {
         self.get_tarball_url_for_ref(host, user, repo, version)
     }
 
-    fn get_repo_url(&self, host: &str, user: &str, repo: &str) -> String {
-        format!("https://{}/~{}/{}", host, user, repo)
+    async fn get_repo_url(&self, host: &str, user: &str, repo: &str) -> Result<String, ForgeError> {
+        Ok(format!("https://{}/~{}/{}", host, user, repo))
     }
 }

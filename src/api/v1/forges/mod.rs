@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+mod auto_discover;
+pub use auto_discover::AutoDiscover;
 mod flakehub;
 pub use flakehub::FlakeHub;
 mod forgejo;

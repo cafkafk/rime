@@ -15,11 +15,11 @@ impl Forge for GitHub {
         Self
     }
 
-    fn get_flagship_host(&self) -> Result<String, ForgeError> {
+    async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("github.com".to_string())
     }
 
-    fn get_api_releases_url(
+    async fn get_api_releases_url(
         &self,
         _host: &str,
         user: &str,
@@ -32,7 +32,7 @@ impl Forge for GitHub {
         ))
     }
 
-    fn get_tarball_url_for_branch(
+    async fn get_tarball_url_for_branch(
         &self,
         _host: &str,
         user: &str,
@@ -45,7 +45,7 @@ impl Forge for GitHub {
         ))
     }
 
-    fn get_tarball_url_for_version(
+    async fn get_tarball_url_for_version(
         &self,
         _host: &str,
         user: &str,
@@ -58,7 +58,12 @@ impl Forge for GitHub {
         ))
     }
 
-    fn get_repo_url(&self, _host: &str, user: &str, repo: &str) -> String {
-        format!("https://github.com/{}/{}", user, repo)
+    async fn get_repo_url(
+        &self,
+        _host: &str,
+        user: &str,
+        repo: &str,
+    ) -> Result<String, ForgeError> {
+        Ok(format!("https://github.com/{}/{}", user, repo))
     }
 }

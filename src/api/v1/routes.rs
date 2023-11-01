@@ -6,9 +6,7 @@
 
 use axum::Router;
 
-use super::auto_discovery::routes::get_routes as get_auto_discovery_routes;
-
-use super::{FlakeHub, Forge, Forgejo, GitHub, Gitlab, SourceHut};
+use super::{AutoDiscover, FlakeHub, Forge, Forgejo, GitHub, Gitlab, SourceHut};
 
 pub fn get_routes() -> Router {
     let forgejo = Forgejo::new();
@@ -18,7 +16,6 @@ pub fn get_routes() -> Router {
     let sourcehut = SourceHut::new();
 
     Router::new()
-        .merge(get_auto_discovery_routes())
         // --- Forgejo & Gitea
         .nest("/forgejo", forgejo.get_self_hosted_routes())
         .nest("/gitea", forgejo.get_self_hosted_routes())
@@ -39,4 +36,6 @@ pub fn get_routes() -> Router {
         // --- FlakeHub
         .nest("/flakehub", flakehub.get_routes())
         .nest("/flakehub.com", flakehub.get_routes())
+        // --- Automatic discovery
+        .nest("/:host", AutoDiscover::new().get_routes())
 }
