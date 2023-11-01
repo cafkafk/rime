@@ -5,11 +5,9 @@
 
 pub mod routes;
 
-mod auto_discovery;
-
 mod forge;
-pub use forge::{Forge, ForgeError};
+pub use forge::{DynForge, Forge, ForgeError};
 mod forges;
-pub use forges::{FlakeHub, Forgejo, GitHub, Gitlab, SourceHut};
+pub use forges::{AutoDiscover, FlakeHub, Forgejo, GitHub, Gitlab, SourceHut};
 
 pub mod utils;

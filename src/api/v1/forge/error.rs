@@ -16,6 +16,7 @@ pub enum ForgeError {
     RequestError(reqwest::Error),
     EndpointUnavailable,
     NoFlagshipInstance,
+    AutodetectFailed(String),
 }
 
 impl IntoResponse for ForgeError {
@@ -40,6 +41,13 @@ impl IntoResponse for ForgeError {
                 (
                     StatusCode::NOT_FOUND,
                     "flagship instance unavailable for this forge".to_string(),
+                )
+            }
+            ForgeError::AutodetectFailed(host) => {
+                error!("ForgeError::AutodetectFailed: host: {host}");
+                (
+                    StatusCode::BAD_REQUEST,
+                    format!("failed to auto-detect the forge on {}", host),
                 )
             }
         };

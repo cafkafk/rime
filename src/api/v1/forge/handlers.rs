@@ -18,7 +18,7 @@ use super::{DynForge, ForgeError, ForgeReleases};
 use crate::api::v1::utils::ReleaseQueryParams;
 use crate::data::Config;
 
-fn get_host_user_repo_triplet(
+async fn get_host_user_repo_triplet(
     paths: &HashMap<String, String>,
     forge: &DynForge,
 ) -> Result<(String, String, String), ForgeError> {
@@ -26,7 +26,7 @@ fn get_host_user_repo_triplet(
     let host = if let Some(host) = &paths.get("host") {
         host.to_string()
     } else {
-        forge.get_flagship_host()?
+        forge.get_flagship_host().await?
     };
 
     Ok((host, user, repo))
@@ -39,7 +39,7 @@ pub async fn get_tarball_url_for_latest_release(
     params: Query<ReleaseQueryParams>,
     request: Request<Body>,
 ) -> Result<Response, ForgeError> {
-    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge)?;
+    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
 
     if repo.ends_with(".tar.gz") {
         let repo_name = repo
@@ -47,12 +47,9 @@ pub async fn get_tarball_url_for_latest_release(
             .strip_suffix(".tar.gz")
             .expect("couldn't strip .tar.gz suffix")
             .to_string();
-        let api_releases_url = forge.get_api_releases_url(
-            &host,
-            &user,
-            &repo_name,
-            config.get_forge_api_page_size(),
-        )?;
+        let api_releases_url = forge
+            .get_api_releases_url(&host, &user, &repo_name, config.get_forge_api_page_size())
+            .await?;
         trace!("api_releases_url: {}", api_releases_url);
         let releases = ForgeReleases::from_url(api_releases_url).await?;
 
@@ -60,14 +57,15 @@ pub async fn get_tarball_url_for_latest_release(
             let latest_tag = latest_release.tag_name;
             trace!("latest_tag: {latest_tag:}");
 
-            let redirect_url =
-                forge.get_tarball_url_for_version(&host, &user, &repo_name, &latest_tag)?;
+            let redirect_url = forge
+                .get_tarball_url_for_version(&host, &user, &repo_name, &latest_tag)
+                .await?;
             trace!("tarball_url_for_latest_release: {redirect_url:}");
             Ok(Redirect::to(&redirect_url).into_response())
         } else {
             let body = format!(
                 "Hi friend, no releases found for {} :(",
-                forge.get_repo_url(&host, &user, &repo_name)
+                forge.get_repo_url(&host, &user, &repo_name).await?
             );
             Ok((StatusCode::NOT_FOUND, body).into_response())
         }
@@ -86,18 +84,20 @@ pub async fn get_tarball_url_for_branch(
     Extension(forge): Extension<DynForge>,
     request: Request<Body>,
 ) -> Result<Response, ForgeError> {
-    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge)?;
+    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
     let branch = &paths["branch"];
 
     if branch.ends_with(".tar.gz") {
-        let url = forge.get_tarball_url_for_branch(
-            &host,
-            &user,
-            &repo,
-            branch
-                .strip_suffix(".tar.gz")
-                .expect("couldn't strip .tar.gz suffix"),
-        )?;
+        let url = forge
+            .get_tarball_url_for_branch(
+                &host,
+                &user,
+                &repo,
+                branch
+                    .strip_suffix(".tar.gz")
+                    .expect("couldn't strip .tar.gz suffix"),
+            )
+            .await?;
         trace!("tarball_url_for_branch: {url:}");
         Ok(Redirect::to(&url).into_response())
     } else {
@@ -115,18 +115,20 @@ pub async fn get_tarball_url_for_version(
     Extension(forge): Extension<DynForge>,
     request: Request<Body>,
 ) -> Result<Response, ForgeError> {
-    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge)?;
+    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
     let version = &paths["version"];
 
     if version.ends_with(".tar.gz") {
-        let url = forge.get_tarball_url_for_version(
-            &host,
-            &user,
-            &repo,
-            version
-                .strip_suffix(".tar.gz")
-                .expect("couldn't strip .tar.gz suffix"),
-        )?;
+        let url = forge
+            .get_tarball_url_for_version(
+                &host,
+                &user,
+                &repo,
+                version
+                    .strip_suffix(".tar.gz")
+                    .expect("couldn't strip .tar.gz suffix"),
+            )
+            .await?;
         trace!("tarball_url_for_version: {url:}");
         Ok(Redirect::to(&url).into_response())
     } else {

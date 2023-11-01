@@ -22,9 +22,9 @@ pub trait Forge {
     where
         Self: Sized;
 
-    fn get_flagship_host(&self) -> Result<String, ForgeError>;
+    async fn get_flagship_host(&self) -> Result<String, ForgeError>;
 
-    fn get_api_releases_url(
+    async fn get_api_releases_url(
         &self,
         host: &str,
         user: &str,
@@ -32,7 +32,7 @@ pub trait Forge {
         page_size: u8,
     ) -> Result<String, ForgeError>;
 
-    fn get_tarball_url_for_branch(
+    async fn get_tarball_url_for_branch(
         &self,
         host: &str,
         user: &str,
@@ -40,7 +40,7 @@ pub trait Forge {
         branch: &str,
     ) -> Result<String, ForgeError>;
 
-    fn get_tarball_url_for_version(
+    async fn get_tarball_url_for_version(
         &self,
         host: &str,
         user: &str,
@@ -48,7 +48,7 @@ pub trait Forge {
         version: &str,
     ) -> Result<String, ForgeError>;
 
-    fn get_repo_url(&self, host: &str, user: &str, repo: &str) -> String;
+    async fn get_repo_url(&self, host: &str, user: &str, repo: &str) -> Result<String, ForgeError>;
 
     // The functions below come with reasonable defaults. In most cases, structs
     // implementing the trait will not need to override them.
