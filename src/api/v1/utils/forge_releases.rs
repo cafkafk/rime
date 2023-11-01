@@ -4,6 +4,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use log::trace;
+use reqwest::{
+    header::{ACCEPT, USER_AGENT},
+    Url,
+};
 use std::slice::Iter;
 
 #[derive(Clone, Debug)]
@@ -52,5 +56,34 @@ impl ForgeReleases {
         } else {
             self.0.clone().into_iter().find(|rel| !rel.prerelease)
         }
+    }
+
+    pub async fn from_url(
+        releases_url: Url,
+    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+        trace!("releases_url: {releases_url:#?}");
+
+        let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;
+        let res = client
+            .get(releases_url)
+            .header(ACCEPT, "application/vnd.github+json, application/json")
+            .header("X-GitHub-Api-Version", "2022-11-28")
+            .send()
+            .await?
+            .json::<serde_json::Value>()
+            .await?;
+
+        let releases = if res.is_array() {
+            Self::from(
+                res.as_array()
+                    .expect("Failed to unwrap releases API response as_array()")
+                    .iter(),
+            )
+        } else {
+            Self::new()
+        };
+        trace!("releases: {releases:#?}");
+
+        Ok(releases)
     }
 }
