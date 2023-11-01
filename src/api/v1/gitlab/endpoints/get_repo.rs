@@ -5,7 +5,7 @@
 
 use axum::{
     body::Body,
-    extract::{Extension, Path},
+    extract::{Extension, Path, Query},
     http::{Request, StatusCode},
     response::{IntoResponse, Redirect},
 };
@@ -14,11 +14,13 @@ use axum::{
 use log::{debug, error, info, trace, warn};
 
 use super::super::utils::gitlab_api_get_releases;
+use crate::api::v1::utils::ReleaseQueryParams;
 use crate::data::Config;
 
 pub async fn get_repo(
     Path((host, user, repo)): Path<(String, String, String)>,
     Extension(config): Extension<Config>,
+    params: Query<ReleaseQueryParams>,
     request: Request<Body>,
 ) -> impl IntoResponse {
     if repo.ends_with(".tar.gz") {
@@ -35,7 +37,7 @@ pub async fn get_repo(
         )
         .await
         .expect("failed to await gitlab_api_get_releases");
-        if let Some(latest_release) = releases.latest_release(true) {
+        if let Some(latest_release) = releases.latest_release(params.include_prereleases()) {
             let latest_tag = latest_release.tag_name;
             trace!("latest_tag: {latest_tag:#?}");
 
