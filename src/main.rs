@@ -35,14 +35,6 @@ async fn main() {
 
     trace!("{config:#?}");
 
-    let socket_addr: String = format!(
-        "{}:{}",
-        config.addr.expect("couldn't unwrap config.addr"),
-        config.port.expect("couldn't unwrap config.addr")
-    );
-
-    debug!("{socket_addr:#?}");
-
     let app = Router::new()
         .route(
             "/",
@@ -50,7 +42,7 @@ async fn main() {
         )
         .merge(get_api_routes());
 
-    axum::Server::bind(&socket_addr.parse().expect("failed to parse socket_addr"))
+    axum::Server::bind(&config.bind_addr())
         .serve(app.into_make_service())
         .await
         .expect("failed to await on bind().serve()");
