@@ -4,11 +4,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use log::trace;
-use reqwest::{
-    header::{ACCEPT, USER_AGENT},
-    Url,
-};
+use reqwest::header::{ACCEPT, USER_AGENT};
 use std::slice::Iter;
+
+use super::ForgeError;
 
 #[derive(Clone, Debug)]
 pub struct ForgeRelease {
@@ -58,9 +57,7 @@ impl ForgeReleases {
         }
     }
 
-    pub async fn from_url(
-        releases_url: Url,
-    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn from_url(releases_url: String) -> Result<Self, ForgeError> {
         trace!("releases_url: {releases_url:#?}");
 
         let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;

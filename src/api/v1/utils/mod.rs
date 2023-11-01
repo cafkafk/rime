@@ -3,7 +3,5 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-mod forge_releases;
-pub use forge_releases::ForgeReleases;
 mod release_query_params;
 pub use release_query_params::ReleaseQueryParams;

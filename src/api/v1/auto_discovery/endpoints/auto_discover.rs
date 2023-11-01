@@ -6,10 +6,10 @@
 use axum::{
     extract::Path,
     http::StatusCode,
-    response::{IntoResponse, Redirect},
+    response::{IntoResponse, Redirect, Response},
 };
 
-use crate::api::v1::{forgejo::is_forgejo, gitlab::is_gitlab};
+use super::super::super::{ForgeError, Forgejo, Gitlab};
 
 #[allow(unused)]
 use log::{debug, error, info, trace, warn};
@@ -22,11 +22,12 @@ impl AutoDiscovery {
         Self(host.to_string(), None)
     }
 
-    pub async fn try_forgejo(self) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn try_forgejo(self) -> Result<Self, ForgeError> {
         if self.1.is_some() {
             return Ok(self);
         }
-        if is_forgejo(&self.0).await? {
+
+        if Forgejo::is_host_forgejo(&self.0).await? {
             Ok(Self(
                 self.0.clone(),
                 Some(format!("/v1/forgejo/{}", self.0)),
@@ -36,11 +37,12 @@ impl AutoDiscovery {
         }
     }
 
-    pub async fn try_gitlab(self) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn try_gitlab(self) -> Result<Self, ForgeError> {
         if self.1.is_some() {
             return Ok(self);
         }
-        if is_gitlab(&self.0).await? {
+
+        if Gitlab::is_host_gitlab(&self.0).await? {
             Ok(Self(self.0.clone(), Some(format!("/v1/gitlab/{}", self.0))))
         } else {
             Ok(Self(self.0, None))
@@ -52,21 +54,21 @@ impl AutoDiscovery {
     }
 }
 
-pub async fn auto_discover(Path((host, url)): Path<(String, String)>) -> impl IntoResponse {
+pub async fn auto_discover(
+    Path((host, url)): Path<(String, String)>,
+) -> Result<Response, ForgeError> {
     let target = AutoDiscovery::new_for(&host)
         .try_forgejo()
-        .await
-        .expect("failed to await try_forgejo")
+        .await?
         .try_gitlab()
-        .await
-        .expect("failed to await try_gitlab")
+        .await?
         .url(&url);
     trace!("target: {target:#?}");
 
     if let Some(target_url) = target {
-        Redirect::to(&target_url).into_response()
+        Ok(Redirect::to(&target_url).into_response())
     } else {
         let body = format!("Unable to auto-discover the forge at {:#?} :(", host);
-        (StatusCode::BAD_REQUEST, body).into_response()
+        Ok((StatusCode::BAD_REQUEST, body).into_response())
     }
 }
