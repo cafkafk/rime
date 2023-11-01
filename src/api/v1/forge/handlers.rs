@@ -9,6 +9,7 @@ use axum::{
     http::{Request, StatusCode},
     response::{IntoResponse, Redirect, Response},
 };
+use serde::Deserialize;
 use std::collections::HashMap;
 
 #[allow(unused)]
@@ -79,14 +80,28 @@ pub async fn get_tarball_url_for_latest_release(
     }
 }
 
+#[derive(Deserialize, Debug)]
+pub struct SemverQuery {
+    pub version: Option<String>,
+}
+
 pub async fn get_tarball_url_for_semantic_version(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,
     Extension(config): Extension<Config>,
+    params: Query<SemverQuery>,
     request: Request<Body>,
 ) -> Result<Response, ForgeError> {
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
-    let ver = &paths["version"];
+    let ver = if let Some(version) = &params.version {
+        format!("{version}.tar.gz")
+    } else if let Some(version) = &paths.get("version") {
+        version.to_string()
+    } else {
+        return Err(ForgeError::BadRequest(
+            "No semantic version requirement specified".to_string(),
+        ));
+    };
 
     if ver.ends_with(".tar.gz") {
         let ver_name = ver
