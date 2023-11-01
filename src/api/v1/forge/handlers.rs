@@ -79,6 +79,55 @@ pub async fn get_tarball_url_for_latest_release(
     }
 }
 
+pub async fn get_tarball_url_for_semantic_version(
+    Path(paths): Path<HashMap<String, String>>,
+    Extension(forge): Extension<DynForge>,
+    Extension(config): Extension<Config>,
+    request: Request<Body>,
+) -> Result<Response, ForgeError> {
+    let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
+    let ver = &paths["version"];
+
+    if ver.ends_with(".tar.gz") {
+        let ver_name = ver
+            .clone()
+            .strip_suffix(".tar.gz")
+            .expect("couldn't strip .tar.gz suffix")
+            .to_string();
+        let api_releases_url = forge
+            .get_api_releases_url(&host, &user, &repo, config.get_forge_api_page_size())
+            .await?;
+        trace!("api_releases_url: {}", api_releases_url);
+        let releases = ForgeReleases::from_url(api_releases_url).await?;
+
+        let v = semver::VersionReq::parse(&ver_name)?;
+
+        if let Some(latest_release) = releases.matching(&repo, v) {
+            let latest_tag = latest_release.tag_name;
+            trace!("latest_tag: {latest_tag:}");
+
+            let redirect_url = forge
+                .get_tarball_url_for_version(&host, &user, &repo, &latest_tag)
+                .await?;
+            trace!("tarball_url_for_latest_release: {redirect_url:}");
+            Ok(Redirect::to(&redirect_url).into_response())
+        } else {
+            let body = format!(
+                "Hi friend, no releases found for {} :(",
+                forge.get_repo_url(&host, &user, &repo).await?
+            );
+            Ok((StatusCode::NOT_FOUND, body).into_response())
+        }
+    } else {
+        let body = format!(
+            "Hi friend, you probably meant to request {:#?}{}.tar.gz, that should work <3",
+            request.headers()["host"],
+            request.uri()
+        );
+        Ok((StatusCode::BAD_REQUEST, body).into_response())
+    }
+}
+
 pub async fn get_tarball_url_for_branch(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,

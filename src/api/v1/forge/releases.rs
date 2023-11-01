@@ -57,6 +57,31 @@ impl ForgeReleases {
         }
     }
 
+    fn try_version_from_tag(&self, repo: &str, ver: &str) -> Result<semver::Version, ForgeError> {
+        // v<ver> => <repo>- => <ver>
+        let v = if ver.starts_with('v') {
+            ver.strip_prefix('v')
+                .expect("couldn't strip the `v` prefix")
+        } else if ver.starts_with(&format!("{repo}-")) {
+            ver.strip_prefix(&format!("{repo}-"))
+                .expect("couldn't strip the `{repo}-` prefix")
+        } else {
+            ver
+        };
+
+        Ok(semver::Version::parse(v)?)
+    }
+
+    pub fn matching(self, repo: &str, version_req: semver::VersionReq) -> Option<ForgeRelease> {
+        self.0.clone().into_iter().find(|v| {
+            trace!("trying to match {} against {}", &v.tag_name, version_req);
+            match self.try_version_from_tag(repo, &v.tag_name) {
+                Ok(version) => version_req.matches(&version),
+                _ => false,
+            }
+        })
+    }
+
     pub async fn from_url(releases_url: String) -> Result<Self, ForgeError> {
         trace!("releases_url: {releases_url:#?}");
 
