@@ -3,13 +3,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use axum::{
-    extract::Path,
-    response::{IntoResponse, Redirect, Response},
-    routing::get,
-    Router,
-};
-use log::trace;
 use reqwest::header::{ACCEPT, USER_AGENT};
 
 use super::super::{Forge, ForgeError};
@@ -43,16 +36,6 @@ impl Forgejo {
             .send()
             .await?;
         Ok(res.status() == 200)
-    }
-
-    async fn codeberg_redirect(Path(url): Path<String>) -> Response {
-        let target = format!("/v1/forgejo/codeberg.org/{}", url);
-        trace!("codeberg_redirect_target: {target}");
-        Redirect::to(&target).into_response()
-    }
-
-    pub fn get_redirect_routes(&self) -> Router {
-        Router::new().route("/codeberg/*req", get(Self::codeberg_redirect))
     }
 }
 
