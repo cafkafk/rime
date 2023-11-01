@@ -41,6 +41,14 @@ fn get_forge_routes(forge: impl Forge + Send + Sync + 'static) -> Router {
             "/:user/:repo/t/:version",
             get(forge::handlers::get_tarball_url_for_version),
         )
+        .route(
+            "/:user/:repo/semver/:version",
+            get(forge::handlers::get_tarball_url_for_semantic_version),
+        )
+        .route(
+            "/:user/:repo/s/:version",
+            get(forge::handlers::get_tarball_url_for_semantic_version),
+        )
         .layer(Extension(forge))
 }
 
