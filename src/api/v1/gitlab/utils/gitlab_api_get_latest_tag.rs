@@ -18,7 +18,7 @@ pub async fn gitlab_api_get_latest_tag(
     // TODO: The middle part, `{}%2F{}` is really `user/repo` URL-encoded. We
     // should do proper URL encoding.
     let version_uri = Url::parse(&format!(
-        "https://{}/api/v4/projects/{}%2F{}/repository/tags",
+        "https://{}/api/v4/projects/{}%2F{}/releases",
         host, user, repo
     ))?;
     trace!("{:#?}", version_uri);
@@ -31,9 +31,9 @@ pub async fn gitlab_api_get_latest_tag(
         .json::<serde_json::Value>()
         .await?;
 
-    trace!("got:\n {:#?}", res[0]["name"]);
+    trace!("got:\n {:#?}", res[0]["tag_name"]);
 
-    Ok(res[0]["name"]
+    Ok(res[0]["tag_name"]
         .as_str()
         .expect("failed to get release name as_str()")
         .to_string())
