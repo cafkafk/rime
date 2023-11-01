@@ -59,70 +59,41 @@ pub trait Forge {
     {
         Router::new()
             .route(
-                "/:host/:user/:repo",
+                "/:user/:repo",
                 get(handlers::get_tarball_url_for_latest_release),
             )
             .route(
-                "/:host/:user/:repo/branch/*branch",
+                "/:user/:repo/branch/*branch",
                 get(handlers::get_tarball_url_for_branch),
             )
             .route(
-                "/:host/:user/:repo/b/*branch",
+                "/:user/:repo/b/*branch",
                 get(handlers::get_tarball_url_for_branch),
             )
             .route(
-                "/:host/:user/:repo/version/:version",
+                "/:user/:repo/version/:version",
                 get(handlers::get_tarball_url_for_version),
             )
             .route(
-                "/:host/:user/:repo/v/:version",
+                "/:user/:repo/v/:version",
                 get(handlers::get_tarball_url_for_version),
             )
             .route(
-                "/:host/:user/:repo/tag/:version",
+                "/:user/:repo/tag/:version",
                 get(handlers::get_tarball_url_for_version),
             )
             .route(
-                "/:host/:user/:repo/t/:version",
+                "/:user/:repo/t/:version",
                 get(handlers::get_tarball_url_for_version),
             )
             .layer(Extension(Arc::new(Self::new()) as DynForge))
     }
 
-    fn get_flagship_routes(&self) -> Router
+    fn get_self_hosted_routes(&self) -> Router
     where
         Self: Sized + Send + Sync + 'static,
     {
-        Router::new()
-            .route(
-                "/:user/:repo",
-                get(handlers::get_tarball_url_for_latest_release_from_flagship),
-            )
-            .route(
-                "/:user/:repo/branch/*branch",
-                get(handlers::get_tarball_url_for_branch_from_flagship),
-            )
-            .route(
-                "/:user/:repo/b/*branch",
-                get(handlers::get_tarball_url_for_branch_from_flagship),
-            )
-            .route(
-                "/:user/:repo/version/:version",
-                get(handlers::get_tarball_url_for_version_from_flagship),
-            )
-            .route(
-                "/:user/:repo/v/:version",
-                get(handlers::get_tarball_url_for_version_from_flagship),
-            )
-            .route(
-                "/:user/:repo/tag/:version",
-                get(handlers::get_tarball_url_for_version_from_flagship),
-            )
-            .route(
-                "/:user/:repo/t/:version",
-                get(handlers::get_tarball_url_for_version_from_flagship),
-            )
-            .layer(Extension(Arc::new(Self::new()) as DynForge))
+        Router::new().nest("/:host", self.get_routes())
     }
 }
 
