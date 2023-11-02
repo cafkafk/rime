@@ -185,6 +185,22 @@ run_test TARGET:
     fi
     rm $test_dir -r
 
+testStringPre := "The fault, dear pre-release-Brutus, is not in our flakes, but in our governance, that we aren't moderators."
+
+run_test_pre TARGET:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    test_dir=`mktemp -d -t "XXXXXXX-rime-itest"`
+    nix run {{TARGET}} --refresh 2> $test_dir/nix-run.log 1> $test_dir/nix-run.out
+    diff -U3 --color=auto <(cat $test_dir/nix-run.out) <(echo "{{testStringPre}}")
+    if grep -q 'warning: error:' $test_dir/nix-run.log; then
+        cat $test_dir/nix-run.log;
+        rm $test_dir -r
+        echo "tests failed >_<"
+        exit 1
+    fi
+    rm $test_dir -r
+
 
 # Integration Testing (requires Nix)
 itest:
@@ -201,11 +217,11 @@ itest:
     just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/v/v0.0.1.tar.gz"
 
     # Branch Endpoints
-    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/b/main.tar.gz"
+    just run_test_pre "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/b/main.tar.gz"
 
     # Tags Endpoints
-    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/v0.0.1.tar.gz"
-    just run_test "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/main.tar.gz"
+    just run_test     "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/v0.0.1.tar.gz"
+    just run_test_pre "http://localhost:3000/v1/sourcehut/git.sr.ht/cafkafk/hello/t/main.tar.gz"
 
     # Autodiscovery
     just run_test "http://localhost:3000/v1/codeberg.org/cafkafk/hello.tar.gz"
@@ -214,6 +230,19 @@ itest:
     just run_test "http://localhost:3000/v1/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
+    # Filter pre-releases
+    just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=false"
+
+    # Don't filter pre-releases (gitlab doesn't support pre-releases)
+    -just run_test_pre "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test     "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test_pre "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=true"
+
+    # Test branches with questionable amount of slashes
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
