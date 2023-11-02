@@ -9,6 +9,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2023-11-02
+
+### Bug Fixes
+
+- Add SystemConfiguration, refactor slightly
+
+### Documentation
+
+- Fix typo
+- Revamped readme
+
+### Features
+
+- Add sourcehut version endpoints
+- Add ref endpoint
+- Branch endpoint
+
+### Miscellaneous Tasks
+
+- Release rime v0.1.1
+- Bump flake inputs
+- Gracefully handle partial configs
+
+### Testing
+
+- Add integration tests for the live server
+- Add testing of slashes in branches
+
+### Bug
+
+- Sanitize the tarball name in get_repo_ref
+- Handle branch names with slashes in them
+- Fix Forgejo & GitLab latest tag APIs
+
+### Build
+
+- Change all flake inputs to rime.cx
+- Change most flake inputs to semnix
+
 ## [0.1.1] - 2023-10-30
 
 ### Documentation
