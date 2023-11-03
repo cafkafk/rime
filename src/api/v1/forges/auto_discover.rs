@@ -14,10 +14,10 @@ impl AutoDiscover {
     async fn try_autodiscovery_for(&self, host: &str) -> Result<DynForge, ForgeError> {
         if Forgejo::is_host_forgejo(host).await? {
             trace!("Forgejo discovered at {host}");
-            Ok(Arc::new(Forgejo::new()) as DynForge)
+            Ok(Arc::new(Forgejo) as DynForge)
         } else if Gitlab::is_host_gitlab(host).await? {
             trace!("Gitlab discovered at {host}");
-            Ok(Arc::new(Gitlab::new()) as DynForge)
+            Ok(Arc::new(Gitlab) as DynForge)
         } else {
             Err(ForgeError::AutodetectFailed(host.to_string()))
         }
@@ -26,10 +26,6 @@ impl AutoDiscover {
 
 #[axum::async_trait]
 impl Forge for AutoDiscover {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Err(ForgeError::NoFlagshipInstance)
     }

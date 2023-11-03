@@ -45,10 +45,6 @@ impl Gitlab {
 
 #[axum::async_trait]
 impl Forge for Gitlab {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Err(ForgeError::NoFlagshipInstance)
     }

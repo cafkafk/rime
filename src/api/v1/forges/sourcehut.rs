@@ -26,10 +26,6 @@ impl SourceHut {
 
 #[axum::async_trait]
 impl Forge for SourceHut {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("git.sr.ht".to_string())
     }
