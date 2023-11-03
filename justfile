@@ -249,6 +249,12 @@ itest:
     just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/git.madhouse-project.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
 
+    # Test semantic versioning
+    just run_test "http://localhost:3000/v1/github/cafkafk/hello/s/*.tar.gz"
+    just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello/s/0.0.2-pre.1.tar.gz"
+    # ?version=>=0.0.1,<=0.0.2-pre.5
+    just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
+
     @echo "tests passsed :3"
 
 # Integration Testing of rime.cx (requires Nix)
