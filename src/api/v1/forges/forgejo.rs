@@ -41,10 +41,6 @@ impl Forgejo {
 
 #[axum::async_trait]
 impl Forge for Forgejo {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("codeberg.org".to_string())
     }

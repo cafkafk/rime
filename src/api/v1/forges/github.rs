@@ -11,10 +11,6 @@ pub struct GitHub;
 
 #[axum::async_trait]
 impl Forge for GitHub {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("github.com".to_string())
     }

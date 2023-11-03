@@ -11,10 +11,6 @@ pub struct FlakeHub;
 
 #[axum::async_trait]
 impl Forge for FlakeHub {
-    fn new() -> Self {
-        Self
-    }
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
         Ok("flakehub.com".to_string())
     }

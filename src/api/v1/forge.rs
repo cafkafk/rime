@@ -18,10 +18,6 @@ pub use releases::ForgeReleases;
 
 #[async_trait]
 pub trait Forge {
-    fn new() -> Self
-    where
-        Self: Sized;
-
     async fn get_flagship_host(&self) -> Result<String, ForgeError>;
 
     async fn get_api_releases_url(
