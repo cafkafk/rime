@@ -60,8 +60,14 @@ impl Forge for Gitlab {
         repo: &str,
         page_size: u8,
     ) -> Result<String, ForgeError> {
-        // TODO: The middle part, `{}%2F{}` is really `user/repo` URL-encoded. We
-        // should do proper URL encoding.
+        // NOTE: The middle part, `{}%2F{}` *is* correct that way. The only part of
+        // the path we need to URL-encode is the `/` separator. We use the user and
+        // repo without url-encoding for every other Gitlab endpoint, and none of
+        // those require url encoding, because the forge does not allow user- and
+        // repo names that would.
+        //
+        // Thus, only encoding the separator here is the correct approach, because
+        // that doesn't hide problems.
         Ok(format!(
             "https://{}/api/v4/projects/{}%2F{}/releases?per_page={}",
             host, user, repo, page_size
