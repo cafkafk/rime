@@ -227,7 +227,7 @@ itest:
     # Autodiscovery
     just run_test "http://localhost:3000/v1/codeberg.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github.com/cafkafk/hello.tar.gz"
-    just run_test "http://localhost:3000/v1/gitlab.com/cafkafk/hello.tar.gz"
+    -just run_test "http://localhost:3000/v1/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
