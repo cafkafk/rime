@@ -25,6 +25,32 @@ impl Forge for FlakeHub {
         Err(ForgeError::EndpointUnavailable)
     }
 
+    async fn get_tarball_url_for_semantic_version(
+        &self,
+        host: &str,
+        user: &str,
+        repo: &str,
+        version: &str,
+    ) -> Result<Option<String>, ForgeError> {
+        let version: String = form_urlencoded::byte_serialize(version.as_bytes()).collect();
+        let url = self
+            .get_tarball_url_for_version(host, user, repo, &version)
+            .await?;
+        Ok(Some(url))
+    }
+
+    async fn get_tarball_url_for_latest_release(
+        &self,
+        host: &str,
+        user: &str,
+        repo: &str,
+    ) -> Result<Option<String>, ForgeError> {
+        Ok(Some(
+            self.get_tarball_url_for_version(host, user, repo, "*")
+                .await?,
+        ))
+    }
+
     async fn get_tarball_url_for_branch(
         &self,
         _host: &str,
