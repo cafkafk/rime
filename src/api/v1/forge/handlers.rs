@@ -48,27 +48,36 @@ pub async fn get_tarball_url_for_latest_release(
             .strip_suffix(".tar.gz")
             .expect("couldn't strip .tar.gz suffix")
             .to_string();
-        let api_releases_url = forge
-            .get_api_releases_url(&host, &user, &repo_name, config.get_forge_api_page_size())
-            .await?;
-        trace!("api_releases_url: {}", api_releases_url);
-        let releases = ForgeReleases::from_url(api_releases_url).await?;
 
-        if let Some(latest_release) = releases.latest_release(params.include_prereleases()) {
-            let latest_tag = latest_release.tag_name;
-            trace!("latest_tag: {latest_tag:}");
-
-            let redirect_url = forge
-                .get_tarball_url_for_version(&host, &user, &repo_name, &latest_tag)
-                .await?;
-            trace!("tarball_url_for_latest_release: {redirect_url:}");
+        if let Some(redirect_url) = forge
+            .get_tarball_url_for_latest_release(&host, &user, &repo_name)
+            .await?
+        {
+            trace!("tarball_url_for_latest_release: {redirect_url}");
             Ok(Redirect::to(&redirect_url).into_response())
         } else {
-            let body = format!(
-                "Hi friend, no releases found for {} :(",
-                forge.get_repo_url(&host, &user, &repo_name).await?
-            );
-            Ok((StatusCode::NOT_FOUND, body).into_response())
+            let api_releases_url = forge
+                .get_api_releases_url(&host, &user, &repo_name, config.get_forge_api_page_size())
+                .await?;
+            trace!("api_releases_url: {}", api_releases_url);
+            let releases = ForgeReleases::from_url(api_releases_url).await?;
+
+            if let Some(latest_release) = releases.latest_release(params.include_prereleases()) {
+                let latest_tag = latest_release.tag_name;
+                trace!("latest_tag: {latest_tag:}");
+
+                let redirect_url = forge
+                    .get_tarball_url_for_version(&host, &user, &repo_name, &latest_tag)
+                    .await?;
+                trace!("tarball_url_for_latest_release: {redirect_url:}");
+                Ok(Redirect::to(&redirect_url).into_response())
+            } else {
+                let body = format!(
+                    "Hi friend, no releases found for {} :(",
+                    forge.get_repo_url(&host, &user, &repo_name).await?
+                );
+                Ok((StatusCode::NOT_FOUND, body).into_response())
+            }
         }
     } else {
         let body = format!(
@@ -109,29 +118,38 @@ pub async fn get_tarball_url_for_semantic_version(
             .strip_suffix(".tar.gz")
             .expect("couldn't strip .tar.gz suffix")
             .to_string();
-        let api_releases_url = forge
-            .get_api_releases_url(&host, &user, &repo, config.get_forge_api_page_size())
-            .await?;
-        trace!("api_releases_url: {}", api_releases_url);
-        let releases = ForgeReleases::from_url(api_releases_url).await?;
 
-        let v = semver::VersionReq::parse(&ver_name)?;
-
-        if let Some(latest_release) = releases.matching(&repo, v) {
-            let latest_tag = latest_release.tag_name;
-            trace!("latest_tag: {latest_tag:}");
-
-            let redirect_url = forge
-                .get_tarball_url_for_version(&host, &user, &repo, &latest_tag)
-                .await?;
-            trace!("tarball_url_for_latest_release: {redirect_url:}");
-            Ok(Redirect::to(&redirect_url).into_response())
+        if let Some(semver_url) = forge
+            .get_tarball_url_for_semantic_version(&host, &user, &repo, &ver_name)
+            .await?
+        {
+            trace!("tarball_url_for_semantic_version: {semver_url}");
+            Ok(Redirect::to(&semver_url).into_response())
         } else {
-            let body = format!(
-                "Hi friend, no releases found for {} :(",
-                forge.get_repo_url(&host, &user, &repo).await?
-            );
-            Ok((StatusCode::NOT_FOUND, body).into_response())
+            let api_releases_url = forge
+                .get_api_releases_url(&host, &user, &repo, config.get_forge_api_page_size())
+                .await?;
+            trace!("api_releases_url: {}", api_releases_url);
+            let releases = ForgeReleases::from_url(api_releases_url).await?;
+
+            let v = semver::VersionReq::parse(&ver_name)?;
+
+            if let Some(latest_release) = releases.matching(&repo, v) {
+                let latest_tag = latest_release.tag_name;
+                trace!("latest_tag: {latest_tag:}");
+
+                let redirect_url = forge
+                    .get_tarball_url_for_version(&host, &user, &repo, &latest_tag)
+                    .await?;
+                trace!("tarball_url_for_latest_release: {redirect_url:}");
+                Ok(Redirect::to(&redirect_url).into_response())
+            } else {
+                let body = format!(
+                    "Hi friend, no releases found for {} :(",
+                    forge.get_repo_url(&host, &user, &repo).await?
+                );
+                Ok((StatusCode::NOT_FOUND, body).into_response())
+            }
         }
     } else {
         let body = format!(
