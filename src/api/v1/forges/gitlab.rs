@@ -10,6 +10,9 @@ use super::super::{Forge, ForgeError};
 #[derive(Clone)]
 pub struct Gitlab;
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 impl Gitlab {
     fn get_tarball_url_for_ref(
         &self,
@@ -94,3 +97,4 @@ impl Forge for Gitlab {
         Ok(format!("https://{}/{}/{}", host, user, repo))
     }
 }
+}}

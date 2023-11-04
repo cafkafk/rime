@@ -4,11 +4,14 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-use axum::{extract::Extension, routing::get, Router};
+use cfg_if::cfg_if;
 
+cfg_if! { if #[cfg(feature="ssr")] {
 use super::forge;
 use super::{AutoDiscover, DynForge, FlakeHub, Forge, Forgejo, GitHub, Gitlab, SourceHut};
 use std::sync::Arc;
+
+use axum::{extract::Extension, routing::get, Router};
 
 fn get_forge_routes(forge: impl Forge + Send + Sync + 'static) -> Router {
     let forge = Arc::new(forge) as DynForge;
@@ -81,3 +84,5 @@ pub fn get_routes() -> Router {
         // --- Automatic discovery
         .nest("/:host", get_forge_routes(AutoDiscover))
 }
+
+}}

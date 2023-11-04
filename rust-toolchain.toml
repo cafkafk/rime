@@ -14,3 +14,4 @@ components = [
   "clippy",
 ]
 profile = "minimal"
+targets = ["wasm32-unknown-unknown"]

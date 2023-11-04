@@ -10,6 +10,9 @@ use super::super::{Forge, ForgeError};
 #[derive(Clone)]
 pub struct Forgejo;
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 impl Forgejo {
     fn get_tarball_url_for_ref(
         &self,
@@ -82,3 +85,4 @@ impl Forge for Forgejo {
         Ok(format!("https://{}/{}/{}", host, user, repo))
     }
 }
+}}

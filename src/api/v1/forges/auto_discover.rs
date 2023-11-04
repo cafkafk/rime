@@ -7,6 +7,9 @@ use super::super::{DynForge, Forge, ForgeError, Forgejo, Gitlab};
 use log::trace;
 use std::sync::Arc;
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 #[derive(Clone)]
 pub struct AutoDiscover;
 
@@ -74,3 +77,4 @@ impl Forge for AutoDiscover {
         forge.get_repo_url(host, user, repo).await
     }
 }
+}}

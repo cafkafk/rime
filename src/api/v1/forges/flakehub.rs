@@ -9,6 +9,9 @@ use super::super::{Forge, ForgeError};
 #[derive(Clone)]
 pub struct FlakeHub;
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 #[axum::async_trait]
 impl Forge for FlakeHub {
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
@@ -83,3 +86,4 @@ impl Forge for FlakeHub {
         Ok(format!("https://flakehub.com/flake/{}/{}", user, repo))
     }
 }
+}}

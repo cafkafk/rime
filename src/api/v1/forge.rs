@@ -4,6 +4,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 use axum::async_trait;
 use std::sync::Arc;
 
@@ -67,3 +70,4 @@ pub trait Forge {
 }
 
 pub type DynForge = Arc<dyn Forge + Send + Sync>;
+}}
