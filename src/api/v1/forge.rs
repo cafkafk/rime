@@ -45,6 +45,25 @@ pub trait Forge {
     ) -> Result<String, ForgeError>;
 
     async fn get_repo_url(&self, host: &str, user: &str, repo: &str) -> Result<String, ForgeError>;
+
+    async fn get_tarball_url_for_semantic_version(
+        &self,
+        _host: &str,
+        _user: &str,
+        _repo: &str,
+        _version: &str,
+    ) -> Result<Option<String>, ForgeError> {
+        Ok(None)
+    }
+
+    async fn get_tarball_url_for_latest_release(
+        &self,
+        _host: &str,
+        _user: &str,
+        _repo: &str,
+    ) -> Result<Option<String>, ForgeError> {
+        Ok(None)
+    }
 }
 
 pub type DynForge = Arc<dyn Forge + Send + Sync>;
