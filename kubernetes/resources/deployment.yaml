@@ -2,8 +2,6 @@
 # SPDX-FileContributor: Christina Sørensen
 #
 # SPDX-License-Identifier: AGPL-3.0-only
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,17 +37,3 @@ spec:
           ports:
             - name: http
               containerPort: 3000
-          #resources:
-          #  requests:
-          #    cpu: 200m
-          #    memory: 100Mi
-          #  limits:
-          #    cpu: 300m
-          #    memory: 200Mi
-          # securityContext:
-          #   readOnlyRootFilesystem: true
-          #   runAsNonRoot: true
-          #   allowPrivilegeEscalation: false
-          #   capabilities:
-          #     drop:
-          #       - all
