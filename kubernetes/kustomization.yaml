@@ -7,13 +7,11 @@
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 # Making sure all resources used are created in a dedicated namespace
 # Also specific annotations are added for later identification
 namespace: rime
 commonAnnotations:
   provider: kubernetes-cafkafk-rime
-
 # rime resources (namespace, services, deployments, etc)
 resources:
   - resources/namespace.yaml

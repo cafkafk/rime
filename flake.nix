@@ -126,23 +126,38 @@
           nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse pkg-config openssl vhs];
         };
 
-        # for `nix flake check`
+        # For `nix flake check`
         checks = {
-          pre-commit-check = pre-commit-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              convco.enable = true;
-              reuse = {
-                enable = true;
-                name = "reuse";
-                entry = with pkgs; "${pkgs.reuse}/bin/reuse lint";
-                pass_filenames = false;
-              };
+          pre-commit-check = let
+            # some treefmt formatters are not supported in pre-commit-hooks we filter them out for now.
+            toFilter =
+              # HACK: This is a nice hack to not have to manually filter we should keep in mind for a future refactor.
+              # Stolen from eza
+              ["yamlfmt"];
+            filterFn = n: _v: (!builtins.elem n toFilter);
+            treefmtFormatters = pkgs.lib.mapAttrs (_n: v: {inherit (v) enable;}) (pkgs.lib.filterAttrs filterFn (import ./treefmt.nix).programs);
+          in
+            pre-commit-hooks.lib.${system}.run {
+              src = ./.;
+              hooks =
+                treefmtFormatters
+                // {
+                  convco.enable = true; # not in treefmt
+                  reuse = {
+                    enable = true;
+                    name = "reuse";
+                    entry = with pkgs; "${pkgs.reuse}/bin/reuse lint";
+                    pass_filenames = false;
+                  };
+                };
             };
-          };
           formatting = treefmtEval.config.build.check self;
           build = packages.check;
-          test = packages.test;
+          inherit
+            (packages)
+            default
+            test
+            ;
           lint = packages.clippy;
         };
       }
