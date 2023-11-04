@@ -211,6 +211,7 @@ itest:
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello.tar.gz"
 
     # Version Endpoints
     just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
@@ -254,6 +255,9 @@ itest:
     just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello/s/0.0.2-pre.1.tar.gz"
     # ?version=>=0.0.1,<=0.0.2-pre.5
     just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
+    just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello/s/*.tar.gz"
+    # ?version=>=0.0.1,<=0.0.2-pre.5
+    just run_test_pre "http://localhost:3000/v1/flakehub/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
 
     @echo "tests passsed :3"
 
