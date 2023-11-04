@@ -4,9 +4,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 use axum::{
-    body::Body,
-    extract::{Extension, Path, Query},
-    http::{Request, StatusCode},
+    extract::{Extension, OriginalUri, Path, Query},
+    http::{StatusCode, Uri},
     response::{IntoResponse, Redirect, Response},
 };
 use serde::Deserialize;
@@ -33,7 +32,7 @@ async fn get_host_user_repo_triplet(
     Ok((host, user, repo))
 }
 
-fn try_strip_targz_suffix(part: &str, uri: &str) -> Result<String, ForgeError> {
+fn try_strip_targz_suffix(part: &str, uri: &Uri) -> Result<String, ForgeError> {
     if part.ends_with(".tar.gz") {
         Ok(part
             .strip_suffix(".tar.gz")
@@ -49,10 +48,10 @@ pub async fn get_tarball_url_for_latest_release(
     Extension(forge): Extension<DynForge>,
     Extension(config): Extension<Config>,
     params: Query<ReleaseQueryParams>,
-    request: Request<Body>,
+    OriginalUri(original_uri): OriginalUri,
 ) -> Result<Response, ForgeError> {
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
-    let repo = try_strip_targz_suffix(&repo, &request.uri().to_string())?;
+    let repo = try_strip_targz_suffix(&repo, &original_uri)?;
 
     if let Some(redirect_url) = forge
         .get_tarball_url_for_latest_release(&host, &user, &repo)
@@ -96,7 +95,7 @@ pub async fn get_tarball_url_for_semantic_version(
     Extension(forge): Extension<DynForge>,
     Extension(config): Extension<Config>,
     params: Query<SemverQuery>,
-    request: Request<Body>,
+    OriginalUri(original_uri): OriginalUri,
 ) -> Result<Response, ForgeError> {
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
     let version = if let Some(version) = &params.version {
@@ -108,7 +107,7 @@ pub async fn get_tarball_url_for_semantic_version(
             "No semantic version requirement specified".to_string(),
         ));
     };
-    let version = try_strip_targz_suffix(&version, &request.uri().to_string())?;
+    let version = try_strip_targz_suffix(&version, &original_uri)?;
 
     if let Some(semver_url) = forge
         .get_tarball_url_for_semantic_version(&host, &user, &repo, &version)
@@ -147,10 +146,10 @@ pub async fn get_tarball_url_for_semantic_version(
 pub async fn get_tarball_url_for_branch(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,
-    request: Request<Body>,
+    OriginalUri(original_uri): OriginalUri,
 ) -> Result<Response, ForgeError> {
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
-    let branch = try_strip_targz_suffix(&paths["branch"], &request.uri().to_string())?;
+    let branch = try_strip_targz_suffix(&paths["branch"], &original_uri)?;
     let url = forge
         .get_tarball_url_for_branch(&host, &user, &repo, &branch)
         .await?;
@@ -161,10 +160,10 @@ pub async fn get_tarball_url_for_branch(
 pub async fn get_tarball_url_for_version(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,
-    request: Request<Body>,
+    OriginalUri(original_uri): OriginalUri,
 ) -> Result<Response, ForgeError> {
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
-    let version = try_strip_targz_suffix(&paths["version"], &request.uri().to_string())?;
+    let version = try_strip_targz_suffix(&paths["version"], &original_uri)?;
     let url = forge
         .get_tarball_url_for_version(&host, &user, &repo, &version)
         .await?;
