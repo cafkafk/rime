@@ -19,6 +19,7 @@ pub enum ForgeError {
     AutodetectFailed(String),
     SemverError(semver::Error),
     BadRequest(String),
+    NoTarGz(String),
 }
 
 impl IntoResponse for ForgeError {
@@ -60,6 +61,13 @@ impl IntoResponse for ForgeError {
                 error!("ForgeError::BadRequest: {error}");
                 (StatusCode::BAD_REQUEST, error)
             }
+            ForgeError::NoTarGz(uri) => (
+                StatusCode::BAD_REQUEST,
+                format!(
+                    "Hi friend, you probably meant to request {}.tar.gz, that should work <3",
+                    uri
+                ),
+            ),
         };
         (status, error_message).into_response()
     }
