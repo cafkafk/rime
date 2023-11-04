@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [package]
+# TODO: MUST If you change the name here, you must also do it in flake.nix (and run `cargo generate-lockfile` afterwards)
 name = "rime"
 description = "Nix Flake Input Versioning"
 edition = "2021"
@@ -13,12 +14,17 @@ license = "AGPL-3.0-only"
 version = "0.1.2"
 rust-version = "1.73.0"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "0.6.20", features = ["macros"] }
+axum = { version = "0.6", features = ["json", "tokio"], optional = true }
+axum-macros = { version = "0.3", optional = true }
 bytes = "1.5.0"
 clap = { version = "4.4.6", features = ["cargo"] }
+cfg-if = "1"
 form_urlencoded = "1.2.0"
 http-body-util = "0.1.0-rc.3"
 hyper = { version = "0.14.27", features = ["client"] }
@@ -30,9 +36,55 @@ semver = "1.0.20"
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
 serde_yaml = "0.9.27"
-tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.33.0", features = ["full"], optional = true }
+#
+console_error_panic_hook = "0.1"
+console_log = { version = "1" }
+http = { version = "0.2", optional = true }
+leptos = { version = "0.4", features = ["serde"] }
+leptos_axum = { version = "0.4", optional = true }
+leptos_meta = { version = "0.4" }
+leptos_router = { version = "0.4" }
+tower = { version = "0.4", optional = true }
+tower-http = { version = "0.4", features = ["full"], optional = true }
+wasm-bindgen = "=0.2.87"                                               # The version here must match the pinned stuff in Nix flakes.
 
 [build-dependencies]
 clap = { version = "4.4.6", features = ["cargo"] }
 clap_complete = "4"
 clap_mangen = "0.2.14"
+
+[features]
+default = ["hydrate", "ssr"]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
+ssr = [
+  "dep:axum-macros",
+  "dep:axum",
+  "dep:http",
+  "dep:leptos_axum",
+  "dep:tokio",
+  "dep:tower-http",
+  "dep:tower",
+  "leptos_meta/ssr",
+  "leptos_router/ssr",
+  "leptos/ssr",
+]
+
+# Defines a size-optimized profile for the WASM bundle in release mode
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[package.metadata.leptos]
+site-addr = "0.0.0.0:3000"
+tailwind-input-file = "css/input.css"
+assets-dir = "assets"
+bin-features = ["ssr"]
+lib-features = ["hydrate"]
+# The profile to use for the lib target when compiling for release
+#
+# Optional. Defaults to "release".
+lib-profile-release = "wasm-release"

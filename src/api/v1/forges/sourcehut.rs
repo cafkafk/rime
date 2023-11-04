@@ -6,6 +6,9 @@
 
 use super::super::{Forge, ForgeError};
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 #[derive(Clone)]
 pub struct SourceHut;
 
@@ -64,3 +67,4 @@ impl Forge for SourceHut {
         Ok(format!("https://{}/~{}/{}", host, user, repo))
     }
 }
+}}

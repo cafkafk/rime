@@ -3,6 +3,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 use axum::{
     body::Body,
     extract::{Extension, Path, Query},
@@ -222,3 +225,4 @@ pub async fn get_tarball_url_for_version(
         Ok((StatusCode::BAD_REQUEST, body).into_response())
     }
 }
+}}

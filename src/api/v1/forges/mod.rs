@@ -3,6 +3,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 mod auto_discover;
 pub use auto_discover::AutoDiscover;
 mod flakehub;
@@ -15,3 +18,4 @@ mod gitlab;
 pub use gitlab::Gitlab;
 mod sourcehut;
 pub use sourcehut::SourceHut;
+}}

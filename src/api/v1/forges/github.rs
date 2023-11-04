@@ -9,6 +9,9 @@ use super::super::{Forge, ForgeError};
 #[derive(Clone)]
 pub struct GitHub;
 
+use cfg_if::cfg_if;
+
+cfg_if! { if #[cfg(feature="ssr")] {
 #[axum::async_trait]
 impl Forge for GitHub {
     async fn get_flagship_host(&self) -> Result<String, ForgeError> {
@@ -63,3 +66,4 @@ impl Forge for GitHub {
         Ok(format!("https://github.com/{}/{}", user, repo))
     }
 }
+}}

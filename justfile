@@ -3,6 +3,21 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
+default:
+    @just --list
+
+# Run the project locally
+watch $RUST_BACKTRACE="1":
+    cargo leptos watch
+
+# Run cargo in release mode (prints red panic)
+watch-release:
+    cargo leptos watch --release
+
+# Run tests (backend & frontend)
+test:
+    cargo watch -- cargo leptos test
+
 name := "rime"
 
 genDemo:
