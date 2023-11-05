@@ -20,6 +20,7 @@ pub enum ForgeError {
     SemverError(semver::Error),
     BadRequest(String),
     NoTarGz(String),
+    NoReleaseFound(String),
 }
 
 impl IntoResponse for ForgeError {
@@ -67,6 +68,10 @@ impl IntoResponse for ForgeError {
                     "Hi friend, you probably meant to request {}.tar.gz, that should work <3",
                     uri
                 ),
+            ),
+            ForgeError::NoReleaseFound(repo) => (
+                StatusCode::NOT_FOUND,
+                format!("Hi friend, no suitable releases found for {} :(", repo),
             ),
         };
         (status, error_message).into_response()
