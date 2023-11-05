@@ -69,10 +69,8 @@ impl ForgeReleases {
     pub fn matching(self, version_req: semver::VersionReq) -> Option<ForgeRelease> {
         self.0.clone().into_iter().find(|v| {
             trace!("trying to match {} against {}", &v.tag_name, version_req);
-            match self.try_version_from_tag(&v.tag_name) {
-                Ok(version) => version_req.matches(&version),
-                _ => false,
-            }
+            self.try_version_from_tag(&v.tag_name)
+                .map_or(false, |v| version_req.matches(&v))
         })
     }
 
