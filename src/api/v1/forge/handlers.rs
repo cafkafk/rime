@@ -5,7 +5,7 @@
 
 use axum::{
     extract::{Extension, OriginalUri, Path, Query},
-    http::{StatusCode, Uri},
+    http::Uri,
     response::{IntoResponse, Redirect, Response},
 };
 use serde::Deserialize;
@@ -14,7 +14,7 @@ use std::collections::HashMap;
 #[allow(unused)]
 use log::{debug, error, info, trace, warn};
 
-use super::{DynForge, ForgeError, ForgeReleases};
+use super::{DynForge, ForgeError, ForgeRelease, ForgeReleases};
 use crate::api::v1::utils::ReleaseQueryParams;
 use crate::data::Config;
 
@@ -43,6 +43,41 @@ fn try_strip_targz_suffix(part: &str, uri: &Uri) -> Result<String, ForgeError> {
     }
 }
 
+async fn try_get_release_url<F>(
+    redirect_url: Option<String>,
+    forge: &DynForge,
+    host: &str,
+    user: &str,
+    repo: &str,
+    page_size: u8,
+    reduce: F,
+) -> Result<String, ForgeError>
+where
+    F: FnOnce(ForgeReleases) -> Option<ForgeRelease>,
+{
+    if let Some(url) = redirect_url {
+        return Ok(url);
+    }
+
+    let api_releases_url = forge
+        .get_api_releases_url(host, user, repo, page_size)
+        .await?;
+    trace!("api_releases_url: {}", api_releases_url);
+    let releases = ForgeReleases::from_url(api_releases_url).await?;
+
+    if let Some(release) = reduce(releases) {
+        let latest_tag = release.tag_name;
+        trace!("latest_tag: {latest_tag}");
+        Ok(forge
+            .get_tarball_url_for_version(host, user, repo, &latest_tag)
+            .await?)
+    } else {
+        Err(ForgeError::NoReleaseFound(
+            forge.get_repo_url(host, user, repo).await?,
+        ))
+    }
+}
+
 pub async fn get_tarball_url_for_latest_release(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,
@@ -53,36 +88,20 @@ pub async fn get_tarball_url_for_latest_release(
     let (host, user, repo) = get_host_user_repo_triplet(&paths, &forge).await?;
     let repo = try_strip_targz_suffix(&repo, &original_uri)?;
 
-    if let Some(redirect_url) = forge
-        .get_tarball_url_for_latest_release(&host, &user, &repo)
-        .await?
-    {
-        trace!("tarball_url_for_latest_release: {redirect_url}");
-        Ok(Redirect::to(&redirect_url).into_response())
-    } else {
-        let api_releases_url = forge
-            .get_api_releases_url(&host, &user, &repo, config.get_forge_api_page_size())
-            .await?;
-        trace!("api_releases_url: {}", api_releases_url);
-        let releases = ForgeReleases::from_url(api_releases_url).await?;
-
-        if let Some(latest_release) = releases.latest_release(params.include_prereleases()) {
-            let latest_tag = latest_release.tag_name;
-            trace!("latest_tag: {latest_tag:}");
-
-            let redirect_url = forge
-                .get_tarball_url_for_version(&host, &user, &repo, &latest_tag)
-                .await?;
-            trace!("tarball_url_for_latest_release: {redirect_url:}");
-            Ok(Redirect::to(&redirect_url).into_response())
-        } else {
-            let body = format!(
-                "Hi friend, no releases found for {} :(",
-                forge.get_repo_url(&host, &user, &repo).await?
-            );
-            Ok((StatusCode::NOT_FOUND, body).into_response())
-        }
-    }
+    let redirect_url = try_get_release_url(
+        forge
+            .get_tarball_url_for_latest_release(&host, &user, &repo)
+            .await?,
+        &forge,
+        &host,
+        &user,
+        &repo,
+        config.get_forge_api_page_size(),
+        |releases| releases.latest_release(params.include_prereleases()),
+    )
+    .await?;
+    trace!("tarball_url_for_latest_release: {redirect_url:}");
+    Ok(Redirect::to(&redirect_url).into_response())
 }
 
 #[derive(Deserialize, Debug)]
@@ -109,38 +128,21 @@ pub async fn get_tarball_url_for_semantic_version(
     };
     let version = try_strip_targz_suffix(&version, &original_uri)?;
 
-    if let Some(semver_url) = forge
-        .get_tarball_url_for_semantic_version(&host, &user, &repo, &version)
-        .await?
-    {
-        trace!("tarball_url_for_semantic_version: {semver_url}");
-        Ok(Redirect::to(&semver_url).into_response())
-    } else {
-        let api_releases_url = forge
-            .get_api_releases_url(&host, &user, &repo, config.get_forge_api_page_size())
-            .await?;
-        trace!("api_releases_url: {}", api_releases_url);
-        let releases = ForgeReleases::from_url(api_releases_url).await?;
-
-        let v = semver::VersionReq::parse(&version)?;
-
-        if let Some(latest_release) = releases.matching(&repo, v) {
-            let latest_tag = latest_release.tag_name;
-            trace!("latest_tag: {latest_tag:}");
-
-            let redirect_url = forge
-                .get_tarball_url_for_version(&host, &user, &repo, &latest_tag)
-                .await?;
-            trace!("tarball_url_for_latest_release: {redirect_url:}");
-            Ok(Redirect::to(&redirect_url).into_response())
-        } else {
-            let body = format!(
-                "Hi friend, no releases found for {} :(",
-                forge.get_repo_url(&host, &user, &repo).await?
-            );
-            Ok((StatusCode::NOT_FOUND, body).into_response())
-        }
-    }
+    let v = semver::VersionReq::parse(&version)?;
+    let redirect_url = try_get_release_url(
+        forge
+            .get_tarball_url_for_semantic_version(&host, &user, &repo, &version)
+            .await?,
+        &forge,
+        &host,
+        &user,
+        &repo,
+        config.get_forge_api_page_size(),
+        |releases| releases.matching(&repo, v),
+    )
+    .await?;
+    trace!("tarball_url_for_semantic_version: {redirect_url}");
+    Ok(Redirect::to(&redirect_url).into_response())
 }
 
 pub async fn get_tarball_url_for_branch(
