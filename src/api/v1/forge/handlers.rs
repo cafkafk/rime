@@ -138,7 +138,7 @@ pub async fn get_tarball_url_for_semantic_version(
         &user,
         &repo,
         config.get_forge_api_page_size(),
-        |releases| releases.matching(&repo, v),
+        |releases| releases.matching(v),
     )
     .await?;
     trace!("tarball_url_for_semantic_version: {redirect_url}");
