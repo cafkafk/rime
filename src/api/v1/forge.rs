@@ -14,7 +14,7 @@ mod error;
 pub use error::ForgeError;
 pub mod handlers;
 mod releases;
-pub use releases::ForgeReleases;
+pub use releases::{ForgeRelease, ForgeReleases};
 
 #[async_trait]
 pub trait Forge {
