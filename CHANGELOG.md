@@ -9,6 +9,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2023-11-09
+
+### Documentation
+
+- Update the comment about url encoding
+
+### Features
+
+- Support including pre-releases
+- Add flagship routes for (git.)sr.ht
+- Add an endpoint for semver locking
+- Allow more complex semver locking
+- Add support for release-based endpoints
+- Try extracting a semver more aggressively
+
+### Miscellaneous Tasks
+
+- Add more treefmt'ers, precommit hack
+- Bump serde_json from 1.0.107 to 1.0.108
+
+### Refactor
+
+- Refactor the release discovery
+- Configurable forge API page size
+- Lift out the release list fetching
+- Lift out a lot of shared code
+- Use flagship routes for Codeberg
+- Greatly simplify the handlers
+- Turn auto-discovery into a "Forge"
+- Lift routing out of the Forge trait
+- Drop `new()` from the Forge trait
+- Allow some shortcuts for implementors
+- Lift out the .tar.gz stripping
+- Use the original URI for NoTarGz
+- Re-export ForgeReleases from api::v1::forge
+- Lift out some shared code
+
+### Testing
+
+- Add testing for pre-releases
+- Codeberg must now pass
+- Add testing for the semver endpoint
+- Add testing for the release endpoint
+- Temporarily disable gitlab.com autodiscovery
+
+### Bug
+
+- Improved auto-detection
+
 ## [0.1.2] - 2023-11-02
 
 ### Bug Fixes
@@ -31,6 +80,7 @@ All notable changes to this project will be documented in this file.
 - Release rime v0.1.1
 - Bump flake inputs
 - Gracefully handle partial configs
+- Release rime v0.1.2
 
 ### Testing
 
