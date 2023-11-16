@@ -9,6 +9,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2023-11-16
+
+### Miscellaneous Tasks
+
+- Bump tokio from 1.33.0 to 1.34.0
+- Bump clap from 4.4.7 to 4.4.8
+- Bump serde from 1.0.190 to 1.0.192
+
+### Refactor
+
+- Make ForgeReleases.matching more functional
+
 ## [0.1.3] - 2023-11-09
 
 ### Documentation
@@ -28,6 +40,7 @@ All notable changes to this project will be documented in this file.
 
 - Add more treefmt'ers, precommit hack
 - Bump serde_json from 1.0.107 to 1.0.108
+- Release rime v0.1.3
 
 ### Refactor
 
