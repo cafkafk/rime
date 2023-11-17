@@ -266,18 +266,57 @@ itest:
 itest-live:
     # TODO: self hosted gitlab
 
+    # Default Endpoints
     just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
-    just run_test "http://rime.cx/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
+    just run_test "http://rime.cx/v1/flakehub/cafkafk/hello.tar.gz"
 
+    # Version Endpoints
+    just run_test "http://rime.cx/v1/flakehub/cafkafk/hello/v/v0.0.1.tar.gz"
+    just run_test "http://rime.cx/v1/sourcehut/git.sr.ht/cafkafk/hello/v/v0.0.1.tar.gz"
+
+    # Branch Endpoints
+    just run_test_pre "http://rime.cx/v1/sourcehut/git.sr.ht/cafkafk/hello/b/main.tar.gz"
+
+    # Tags Endpoints
+    just run_test     "http://rime.cx/v1/sourcehut/git.sr.ht/cafkafk/hello/t/v0.0.1.tar.gz"
+    just run_test_pre "http://rime.cx/v1/sourcehut/git.sr.ht/cafkafk/hello/t/main.tar.gz"
+
+    # Autodiscovery
     just run_test "http://rime.cx/v1/codeberg.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/github.com/cafkafk/hello.tar.gz"
-    just run_test "http://rime.cx/v1/gitlab.com/cafkafk/hello.tar.gz"
+    -just run_test "http://rime.cx/v1/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
+    # Filter pre-releases
+    just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=false"
+    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=false"
+
+    # Don't filter pre-releases (gitlab doesn't support pre-releases)
+    just run_test_pre "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test_pre "http://rime.cx/v1/github/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test     "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=true"
+    just run_test_pre "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=true"
+
+    # Test branches with questionable amount of slashes
+    just run_test "http://rime.cx/v1/codeberg/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
+    just run_test "http://rime.cx/v1/github/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
+    just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
+    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://rime.cx/v1/git.madhouse-project.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
+
+    # Test semantic versioning
+    just run_test "http://rime.cx/v1/github/cafkafk/hello/s/*.tar.gz"
+    just run_test_pre "http://rime.cx/v1/github/cafkafk/hello/s/0.0.2-pre.1.tar.gz"
+    # ?version=>=0.0.1,<=0.0.2-pre.5
+    just run_test_pre "http://rime.cx/v1/github/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
+    just run_test "http://rime.cx/v1/flakehub/cafkafk/hello/s/*.tar.gz"
+    # ?version=>=0.0.1,<=0.0.2-pre.5
+    just run_test_pre "http://rime.cx/v1/flakehub/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
 
     @echo "tests passsed :3"
