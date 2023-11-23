@@ -9,6 +9,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2023-11-23
+
+### Bug Fixes
+
+- Remove redundant comment
+
+### Miscellaneous Tasks
+
+- Update flake inputs
+- Bump http-body-util from 0.1.0-rc.3 to 0.1.0
+
+### Testing
+
+- Update itest-live
+
 ## [0.1.4] - 2023-11-16
 
 ### Miscellaneous Tasks
@@ -16,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Bump tokio from 1.33.0 to 1.34.0
 - Bump clap from 4.4.7 to 4.4.8
 - Bump serde from 1.0.190 to 1.0.192
+- Release rime v0.1.4
 
 ### Refactor
 
