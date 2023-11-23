@@ -264,8 +264,6 @@ itest:
 
 # Integration Testing of rime.cx (requires Nix)
 itest-live:
-    # TODO: self hosted gitlab
-
     # Default Endpoints
     just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz"
