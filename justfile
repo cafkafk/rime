@@ -211,6 +211,7 @@ itest:
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
+    just run_test "http://localhost:3000/v1/gitlab/gitlab.freedesktop.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello.tar.gz"
 
@@ -268,6 +269,7 @@ itest-live:
     just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
+    just run_test "http://rime.cx/v1/gitlab/gitlab.freedesktop.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/flakehub/cafkafk/hello.tar.gz"
 
