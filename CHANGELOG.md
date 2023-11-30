@@ -9,6 +9,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.6] - 2023-11-30
+
+### Features
+
+- Add integration testing against freedesktops gitlab
+
+### Miscellaneous Tasks
+
+- Bump serde from 1.0.192 to 1.0.193
+- Bump form_urlencoded from 1.2.0 to 1.2.1
+- Bump hyper from 0.14.27 to 1.0.1
+- Bump openssl from 0.10.57 to 0.10.60
+
 ## [0.1.5] - 2023-11-23
 
 ### Bug Fixes
@@ -19,6 +32,7 @@ All notable changes to this project will be documented in this file.
 
 - Update flake inputs
 - Bump http-body-util from 0.1.0-rc.3 to 0.1.0
+- Release rime v0.1.5
 
 ### Testing
 
