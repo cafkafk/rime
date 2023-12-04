@@ -16,7 +16,7 @@ rust-version = "1.73.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "0.6.20", features = ["macros", "original-uri"] }
+axum = { version = "0.7.1", features = ["macros", "original-uri"] }
 bytes = "1.5.0"
 clap = { version = "4.4.8", features = ["cargo"] }
 form_urlencoded = "1.2.1"
