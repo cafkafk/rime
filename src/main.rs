@@ -6,6 +6,7 @@
 #![deny(clippy::unwrap_used)]
 
 use axum::{extract::Extension, response::Redirect, routing::get, Router};
+use tokio::net::TcpListener;
 
 extern crate log;
 extern crate pretty_env_logger;
@@ -43,8 +44,10 @@ async fn main() {
         .merge(get_api_routes())
         .layer(Extension(config.clone()));
 
-    axum::Server::bind(&config.bind_addr())
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind(&config.bind_addr())
         .await
-        .expect("failed to await on bind().serve()");
+        .expect("failed to bind");
+    axum::serve(listener, app)
+        .await
+        .expect("failed to serve app");
 }
