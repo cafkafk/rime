@@ -9,6 +9,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 2023-12-07
+
+### Bug Fixes
+
+- Axum 0.7.2 breaking changes
+
+### Miscellaneous Tasks
+
+- Bump clap from 4.4.8 to 4.4.10
+- Bump axum from 0.6.20 to 0.7.2
+
 ## [0.1.6] - 2023-11-30
 
 ### Features
@@ -21,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Bump form_urlencoded from 1.2.0 to 1.2.1
 - Bump hyper from 0.14.27 to 1.0.1
 - Bump openssl from 0.10.57 to 0.10.60
+- Release rime v0.1.6
 
 ## [0.1.5] - 2023-11-23
 
