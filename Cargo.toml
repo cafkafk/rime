@@ -18,7 +18,7 @@ rust-version = "1.73.0"
 [dependencies]
 axum = { version = "0.7.2", features = ["macros", "original-uri"] }
 bytes = "1.5.0"
-clap = { version = "4.4.10", features = ["cargo"] }
+clap = { version = "4.4.11", features = ["cargo"] }
 form_urlencoded = "1.2.1"
 http-body-util = "0.1.0"
 hyper = { version = "1.0.1", features = ["client"] }
@@ -33,6 +33,6 @@ serde_yaml = "0.9.27"
 tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
 
 [build-dependencies]
-clap = { version = "4.4.10", features = ["cargo"] }
+clap = { version = "4.4.11", features = ["cargo"] }
 clap_complete = "4"
 clap_mangen = "0.2.14"
