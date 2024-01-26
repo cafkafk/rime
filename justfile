@@ -310,3 +310,8 @@ itest-live:
     just run_test_pre "http://rime.cx/v1/flakehub/cafkafk/hello/s/*.tar.gz?version=%3e%3d0.0.1%2c%3c%3d0.0.2-pre.5"
 
     @echo "tests passsed :3"
+
+# Easy itest... idk I don't wanna type something long
+etest:
+    #!/usr/bin/env fish
+    cargo build && cargo run &; sleep 2; just itest; pkill rime
