@@ -212,7 +212,6 @@ itest:
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.freedesktop.org/cafkafk/hello.tar.gz"
-    just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub/cafkafk/hello.tar.gz"
 
     # Version Endpoints
@@ -230,26 +229,22 @@ itest:
     just run_test "http://localhost:3000/v1/codeberg.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/github.com/cafkafk/hello.tar.gz"
     -just run_test "http://localhost:3000/v1/gitlab.com/cafkafk/hello.tar.gz"
-    just run_test "http://localhost:3000/v1/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://localhost:3000/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
     # Filter pre-releases
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=false"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello.tar.gz?include_prereleases=false"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=false"
-    just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=false"
 
     # Don't filter pre-releases (gitlab doesn't support pre-releases)
     just run_test_pre "http://localhost:3000/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=true"
     just run_test_pre "http://localhost:3000/v1/github/cafkafk/hello.tar.gz?include_prereleases=true"
     just run_test     "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=true"
-    just run_test_pre "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=true"
 
     # Test branches with questionable amount of slashes
     just run_test "http://localhost:3000/v1/codeberg/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/github/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/gitlab/gitlab.com/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
-    just run_test "http://localhost:3000/v1/forgejo/next.forgejo.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://localhost:3000/v1/git.madhouse-project.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
 
     # Test semantic versioning
@@ -270,7 +265,6 @@ itest-live:
     just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/gitlab/gitlab.freedesktop.org/cafkafk/hello.tar.gz"
-    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/flakehub/cafkafk/hello.tar.gz"
 
     # Version Endpoints
@@ -288,26 +282,22 @@ itest-live:
     just run_test "http://rime.cx/v1/codeberg.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/github.com/cafkafk/hello.tar.gz"
     -just run_test "http://rime.cx/v1/gitlab.com/cafkafk/hello.tar.gz"
-    just run_test "http://rime.cx/v1/next.forgejo.org/cafkafk/hello.tar.gz"
     just run_test "http://rime.cx/v1/flakehub.com/cafkafk/hello/v/v0.0.1.tar.gz"
 
     # Filter pre-releases
     just run_test "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=false"
     just run_test "http://rime.cx/v1/github/cafkafk/hello.tar.gz?include_prereleases=false"
     just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=false"
-    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=false"
 
     # Don't filter pre-releases (gitlab doesn't support pre-releases)
     just run_test_pre "http://rime.cx/v1/codeberg/cafkafk/hello.tar.gz?include_prereleases=true"
     just run_test_pre "http://rime.cx/v1/github/cafkafk/hello.tar.gz?include_prereleases=true"
     just run_test     "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello.tar.gz?include_prereleases=true"
-    just run_test_pre "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello.tar.gz?include_prereleases=true"
 
     # Test branches with questionable amount of slashes
     just run_test "http://rime.cx/v1/codeberg/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://rime.cx/v1/github/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://rime.cx/v1/gitlab/gitlab.com/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
-    just run_test "http://rime.cx/v1/forgejo/next.forgejo.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
     just run_test "http://rime.cx/v1/git.madhouse-project.org/cafkafk/hello/b/a-/t/e/s/t/i/n/g/b/r/a/n/c/h-th@t-should-be-/ha/rd/to/d/e/a/l/wi/th.tar.gz"
 
     # Test semantic versioning
