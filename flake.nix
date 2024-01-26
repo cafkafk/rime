@@ -123,7 +123,7 @@
         # For `nix develop`:
         devShells.default = pkgs.mkShell {
           inherit (self.checks.${system}.pre-commit-check) shellHook;
-          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse pkg-config openssl vhs];
+          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse pkg-config openssl vhs fish];
         };
 
         # For `nix flake check`
