@@ -9,6 +9,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.8] - 2024-02-01
+
+### Bug Fixes
+
+- Remove next.forgejo.org testing
+
+### Miscellaneous Tasks
+
+- Bump clap from 4.4.10 to 4.4.11
+- Bump tokio from 1.34.0 to 1.35.0
+- Bump h2 from 0.3.21 to 0.3.24
+- Bump flake inputs
+- Bump hyper from 1.0.1 to 1.1.0
+- Bump tokio from 1.35.0 to 1.35.1
+- Bump reqwest from 0.11.22 to 0.11.23
+
+### Build
+
+- Single command integration tests
+- Bump serde_yaml from 0.9.27 to 0.9.29
+
 ## [0.1.7] - 2023-12-07
 
 ### Bug Fixes
@@ -19,6 +40,7 @@ All notable changes to this project will be documented in this file.
 
 - Bump clap from 4.4.8 to 4.4.10
 - Bump axum from 0.6.20 to 0.7.2
+- Release rime v0.1.7
 
 ## [0.1.6] - 2023-11-30
 
