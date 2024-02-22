@@ -25,17 +25,17 @@ impl Forgejo {
     }
 
     pub async fn is_host_forgejo(host: &str) -> Result<bool, ForgeError> {
-        let uri = format!("https://{}/swagger.v1.json", &host);
-        let client = reqwest::Client::builder()
-            .user_agent(USER_AGENT)
-            .cookie_store(true)
-            .build()?;
+        // I couldn't find a more reasonable way to detect Forgejo, so we'll check
+        // an API endpoint that is specific to this forge, and if it exists, we
+        // assume it's a Forgejo instance.
+        let uri = format!("https://{}/api/v1/settings/api", &host);
+        let client = reqwest::Client::builder().user_agent(USER_AGENT).build()?;
         let res = client
-            .head(uri)
+            .get(&uri)
             .header(ACCEPT, "application/json")
             .send()
             .await?;
-        Ok(res.status() == 200 && res.cookies().any(|cookie| cookie.name() == "i_like_gitea"))
+        Ok(res.status() == 200)
     }
 }
 
