@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 [toolchain]
-channel = "stable"
+channel = "1.74"
 components = [
   "rustfmt",
   "rustc",
