@@ -35,7 +35,7 @@ Usually, you add an input to a flake by adding a link to a git repo. The repo
 you link, will then be locked to the specific version at that time.
 
 But that's kinda weird if you think about it. You don't usually download the
-latest developemnt version of a program do you? No! If you're using a
+latest development version of a program do you? No! If you're using a
 distribution, like nixpkgs, then some people have already added a specific
 version of that program. And not just any version, you get the latest version
 that the developer of that program (upstream) has released.
@@ -49,7 +49,7 @@ like me, who run a project like eza that relies on flakes. While flakes
 themselves are awesome, not having versioned releases for your inputs... isn't
 at all.
 
-So why doesn't flakes do that? Beurocracy, partially at least, but as we've
+So why doesn't flakes do that? Bureaucracy, partially at least, but as we've
 come to realize by making rime, there are actually a lot of advantages to it
 not doing that, because that allows us to do it in a much better way.
 
@@ -62,7 +62,7 @@ released version from the developer whenever it is ready.
 Sounds too good to be true? There's more! We also support a LOT of forges, like:
 
 - Github
-- Gitlab (Includign self hosted)
+- Gitlab (Including self hosted)
 - Codeberg
 - Forgejo (Including self hosted)
 - Gitea (Including self hosted)
@@ -70,7 +70,7 @@ Sounds too good to be true? There's more! We also support a LOT of forges, like:
 - Flakehub (Only tagged versions, for now)
 
 ...and we plan to add support for cgit, cgit-pink, and any other forge you can
-think off (create a feature request issue)!
+think of (create a feature request issue)!
 
 This saves users and developers a lot of headaches. And to make it even better,
 we also support automatically discovering what kind of forge is at an url, and
@@ -85,7 +85,7 @@ No need to look it up, rimes got you covered!
 And it gets even better, because rime is very simple, and you could easily run
 your own version. And if that's not your cup of tea, or you're a developer that
 needs a hosted version that "just works", we also have rime.cx, our own
-kuberenets cluster hosting rime, with plenty of beef to handle all your
+kubernetes cluster hosting rime, with plenty of beef to handle all your
 requests. And if you wanna make your own cluster with a rime deployment, we
 provided an example of how to do that as well, and a ghcr.io container as part
 of the flake.
@@ -106,7 +106,7 @@ released. Neat hu?
 
 Of course, you'll need to have `flakes` and the `nix-command` [experimental features](https://nixos.org/manual/nix/stable/contributing/experimental-features)
 enabled. But don't worry, they're not really “experimental”, that's mostly a
-result of beurocracy. If you wanna reasure yourself, determinate systems, 
+result of bureaucracy. If you wanna reassure yourself, determinate systems, 
 a company founded by the guy that created ofborg, and currently employs the 
 guy that created Nix in the first place [has this to say about flakes stability](https://determinate.systems/posts/experimental-does-not-mean-unstable).
 
@@ -158,4 +158,4 @@ Well... [donations](https://github.com/sponsors/cafkafk) to cover hosting costs 
 
 If you wanna become a rime hacker (and why wouldn't you), I'd like to make you familiar with two very important documents.
 Firstly, you're expected to follow our [code of conduct](https://github.com/cafkafk/rime/blob/main/CODE_OF_CONDUCT.md).
-After that, you can have a look at our [CONTRIBUTING.md](https://github.com/cafkafk/rime/blob/main/CONTRIBUTING.md) for more info about actual hacking. Also, while silly branch names are preffered, you're free to name them something professional, we won't judge.
+After that, you can have a look at our [CONTRIBUTING.md](https://github.com/cafkafk/rime/blob/main/CONTRIBUTING.md) for more info about actual hacking. Also, while silly branch names are preferred, you're free to name them something professional, we won't judge.
