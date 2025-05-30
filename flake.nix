@@ -6,16 +6,20 @@
   description = "rime:  Nix Flake Input Versioning";
 
   inputs = {
-    flake-utils.url = "http://rime.cx/v1/github/semnix/flake-utils.tar.gz";
-    naersk.url = "http://rime.cx/v1/github/semnix/naersk.tar.gz";
-    nixpkgs.url = "http:/rime.cx/v1/github/NixOS/nixpkgs/b/nixpkgs-unstable.tar.gz";
-    treefmt-nix.url = "http://rime.cx/v1/github/semnix/treefmt-nix.tar.gz";
-    rust-overlay.url = "http://rime.cx/v1/github/semnix/rust-overlay.tar.gz";
+    flake-utils.url = "github:numtide/flake-utils";
+    naersk = {
+      url = "github:nix-community/naersk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     pre-commit-hooks = {
-      url = "http://rime.cx/v1/github/semnix/pre-commit-hooks.nix.tar.gz";
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
     };
   };
 
@@ -25,30 +29,18 @@
     naersk,
     nixpkgs,
     treefmt-nix,
-    rust-overlay,
     pre-commit-hooks,
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
-        overlays = [(import rust-overlay)];
+        pkgs = nixpkgs.legacyPackages.${system};
 
-        pkgs = (import nixpkgs) {
-          inherit system overlays;
-        };
-
-        toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-
-        naersk' = pkgs.callPackage naersk {
-          cargo = toolchain;
-          rustc = toolchain;
-          clippy = toolchain;
-        };
+        naersk' = naersk.lib.${system};
 
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
-        darwinBuildInputs = with pkgs; with darwin.apple_sdk.frameworks; [libiconv Security SystemConfiguration];
-
-        buildInputs = with pkgs; [pkg-config openssl] ++ lib.optionals stdenv.isDarwin darwinBuildInputs;
+        nativeBuildInputs = with pkgs; [pkg-config];
+        buildInputs = with pkgs; [openssl];
       in rec {
         # For `nix fmt`
         formatter = treefmtEval.config.build.wrapper;
@@ -63,7 +55,7 @@
             singleStep = true;
             inherit buildInputs;
 
-            nativeBuildInputs = with pkgs; [makeWrapper installShellFiles];
+            nativeBuildInputs = with pkgs; [makeWrapper installShellFiles] ++ nativeBuildInputs;
 
             MAN_OUT = "./man";
 
@@ -102,28 +94,29 @@
           check = naersk'.buildPackage {
             src = ./.;
             mode = "check";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
 
           # Run `nix build .#test` to run tests
           test = naersk'.buildPackage {
             src = ./.;
             mode = "test";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
 
           # Run `nix build .#clippy` to lint code
           clippy = naersk'.buildPackage {
             src = ./.;
             mode = "clippy";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
         };
 
         # For `nix develop`:
         devShells.default = pkgs.mkShell {
           inherit (self.checks.${system}.pre-commit-check) shellHook;
-          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse pkg-config openssl vhs fish];
+          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse vhs fish] ++ nativeBuildInputs;
+          inherit buildInputs;
         };
 
         # For `nix flake check`
@@ -161,5 +154,11 @@
           lint = packages.clippy;
         };
       }
-    );
+    )
+    // {
+      nixosModules = {
+        default = self.nixosModules.rime;
+        rime = nixpkgs.lib.modules.importApply ./module.nix {inherit self;};
+      };
+    };
 }
