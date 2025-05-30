@@ -39,9 +39,8 @@
 
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
-        darwinBuildInputs = with pkgs; with darwin.apple_sdk.frameworks; [libiconv Security SystemConfiguration];
-
-        buildInputs = with pkgs; [pkg-config openssl] ++ lib.optionals stdenv.isDarwin darwinBuildInputs;
+        nativeBuildInputs = with pkgs; [pkg-config];
+        buildInputs = with pkgs; [openssl];
       in rec {
         # For `nix fmt`
         formatter = treefmtEval.config.build.wrapper;
@@ -56,7 +55,7 @@
             singleStep = true;
             inherit buildInputs;
 
-            nativeBuildInputs = with pkgs; [makeWrapper installShellFiles];
+            nativeBuildInputs = with pkgs; [makeWrapper installShellFiles] ++ nativeBuildInputs;
 
             MAN_OUT = "./man";
 
@@ -95,28 +94,29 @@
           check = naersk'.buildPackage {
             src = ./.;
             mode = "check";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
 
           # Run `nix build .#test` to run tests
           test = naersk'.buildPackage {
             src = ./.;
             mode = "test";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
 
           # Run `nix build .#clippy` to lint code
           clippy = naersk'.buildPackage {
             src = ./.;
             mode = "clippy";
-            inherit buildInputs;
+            inherit nativeBuildInputs buildInputs;
           };
         };
 
         # For `nix develop`:
         devShells.default = pkgs.mkShell {
           inherit (self.checks.${system}.pre-commit-check) shellHook;
-          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse pkg-config openssl vhs fish];
+          nativeBuildInputs = with pkgs; [rustup toolchain just zip reuse vhs fish] ++ nativeBuildInputs;
+          inherit buildInputs;
         };
 
         # For `nix flake check`
