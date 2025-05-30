@@ -159,3 +159,40 @@ Well... [donations](https://github.com/sponsors/cafkafk) to cover hosting costs 
 If you wanna become a rime hacker (and why wouldn't you), I'd like to make you familiar with two very important documents.
 Firstly, you're expected to follow our [code of conduct](https://github.com/cafkafk/rime/blob/main/CODE_OF_CONDUCT.md).
 After that, you can have a look at our [CONTRIBUTING.md](https://github.com/cafkafk/rime/blob/main/CONTRIBUTING.md) for more info about actual hacking. Also, while silly branch names are preferred, you're free to name them something professional, we won't judge.
+
+# How can I self-host it?
+
+## Kubernetes
+
+A Kustomize application manifest can be found at [`./kubernetes`](./kubernetes).
+
+## NixOS
+
+A NixOS module is available through the Flake:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "http:/rime.cx/v1/github/NixOS/nixpkgs/b/nixpkgs-unstable.tar.gz";
+    rime.url = "https://rime.cx/v1/github/cafkafk/rime.tar.gz";
+  };
+
+  outputs = { nixpkgs, rime, ... }: {
+    nixosConfigurations.my-machine = nixpkgs.lib.nixosSystem {
+      modules = [
+        ./configuration.nix
+
+        rime.nixosModules.default
+        {
+          services.rime = {
+            enable = true;
+
+            # This will create an NGINX virtual host
+            domain = "rime.example.com";
+          };
+        }
+      ];
+    };
+  };
+}
+```

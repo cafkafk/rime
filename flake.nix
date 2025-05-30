@@ -154,5 +154,11 @@
           lint = packages.clippy;
         };
       }
-    );
+    )
+    // {
+      nixosModules = {
+        default = self.nixosModules.rime;
+        rime = nixpkgs.lib.modules.importApply ./module.nix {inherit self;};
+      };
+    };
 }
