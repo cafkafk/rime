@@ -21,6 +21,7 @@ pub enum ForgeError {
     BadRequest(String),
     NoTarGz(String),
     NoReleaseFound(String),
+    BadURI(String),
 }
 
 impl IntoResponse for ForgeError {
@@ -73,6 +74,13 @@ impl IntoResponse for ForgeError {
                 StatusCode::NOT_FOUND,
                 format!("Hi friend, no suitable releases found for {} :(", repo),
             ),
+            ForgeError::BadURI(uri) => {
+                error!("ForgeError::BadURI: {uri}");
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Hi friend, {} couldn't be converted to a valid URI :(", uri),
+                )
+            }
         };
         (status, error_message).into_response()
     }

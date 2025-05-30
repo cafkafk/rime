@@ -5,7 +5,7 @@
 
 use axum::{
     extract::{Extension, OriginalUri, Path, Query},
-    http::Uri,
+    http::{HeaderValue, Uri},
     response::{IntoResponse, Redirect, Response},
 };
 use serde::Deserialize;
@@ -78,6 +78,23 @@ where
     }
 }
 
+pub fn redirect_to(redirect_url: &str) -> Result<Response, ForgeError> {
+    let mut response = Redirect::to(redirect_url).into_response();
+
+    // Support the "Lockable HTTP Tarball" protocol
+    // https://nix.dev/manual/nix/stable/protocols/tarball-fetcher.html
+    //
+    // This allows Nix to lock the URL we're redirecting to instead of the current endpoint (which
+    // may redirect to a different URL at another time)
+    let Ok(header_value) = HeaderValue::from_str(&format!("<{}>; rel=\"immutable\"", redirect_url))
+    else {
+        return Err(ForgeError::BadURI(redirect_url.to_string()));
+    };
+    response.headers_mut().insert("Link", header_value);
+
+    Ok(response)
+}
+
 pub async fn get_tarball_url_for_latest_release(
     Path(paths): Path<HashMap<String, String>>,
     Extension(forge): Extension<DynForge>,
@@ -101,7 +118,7 @@ pub async fn get_tarball_url_for_latest_release(
     )
     .await?;
     trace!("tarball_url_for_latest_release: {redirect_url:}");
-    Ok(Redirect::to(&redirect_url).into_response())
+    Ok(redirect_to(&redirect_url)?)
 }
 
 #[derive(Deserialize, Debug)]
@@ -142,7 +159,7 @@ pub async fn get_tarball_url_for_semantic_version(
     )
     .await?;
     trace!("tarball_url_for_semantic_version: {redirect_url}");
-    Ok(Redirect::to(&redirect_url).into_response())
+    Ok(redirect_to(&redirect_url)?)
 }
 
 pub async fn get_tarball_url_for_branch(
@@ -156,7 +173,7 @@ pub async fn get_tarball_url_for_branch(
         .get_tarball_url_for_branch(&host, &user, &repo, &branch)
         .await?;
     trace!("tarball_url_for_branch: {url:}");
-    Ok(Redirect::to(&url).into_response())
+    Ok(redirect_to(&url)?)
 }
 
 pub async fn get_tarball_url_for_version(
@@ -170,5 +187,5 @@ pub async fn get_tarball_url_for_version(
         .get_tarball_url_for_version(&host, &user, &repo, &version)
         .await?;
     trace!("tarball_url_for_version: {url:}");
-    Ok(Redirect::to(&url).into_response())
+    Ok(redirect_to(&url)?)
 }
