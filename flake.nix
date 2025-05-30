@@ -16,10 +16,6 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";
@@ -33,24 +29,13 @@
     naersk,
     nixpkgs,
     treefmt-nix,
-    rust-overlay,
     pre-commit-hooks,
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
-        overlays = [(import rust-overlay)];
+        pkgs = nixpkgs.legacyPackages.${system};
 
-        pkgs = (import nixpkgs) {
-          inherit system overlays;
-        };
-
-        toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-
-        naersk' = pkgs.callPackage naersk {
-          cargo = toolchain;
-          rustc = toolchain;
-          clippy = toolchain;
-        };
+        naersk' = naersk.lib.${system};
 
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
