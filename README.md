@@ -20,7 +20,7 @@ Nix Flake Input Versioning
 
 </div>
 
-> **Warning**
+> [!Warning]
 > RIME is experimental, and its API is subject to change.
 
 ## What is rime?
